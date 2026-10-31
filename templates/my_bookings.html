@@ -1,0 +1,776 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Bookings | TravelGo</title>
+
+    <link rel="stylesheet" href="../static/css/style.css">
+    <script src="../static/js/app.js" defer></script>
+
+    <style>
+        .tg-bookings-page {
+            width: 92%;
+            max-width: 1150px;
+            margin: 45px auto;
+            color: #ffffff;
+        }
+
+        .tg-bookings-hero {
+            position: relative;
+            overflow: hidden;
+            padding: 38px;
+            border: 1px solid rgba(255,255,255,.18);
+            border-radius: 24px;
+            background: linear-gradient(125deg, rgba(15,32,78,.96), rgba(67,42,120,.94));
+            box-shadow: 0 12px 35px rgba(0,0,0,.18);
+        }
+
+        .tg-bookings-hero h1 {
+            margin: 12px 0;
+            color: #ffd166;
+            font-size: clamp(28px,4vw,42px);
+        }
+
+        .tg-bookings-hero p {
+            max-width: 680px;
+            color: #f1f4ff;
+            line-height: 1.8;
+        }
+
+        .tg-bookings-plane {
+            position: absolute;
+            top: 22px;
+            right: 30px;
+            font-size: 65px;
+            opacity: .65;
+            pointer-events: none;
+            animation: bookingPlaneFloat 4s ease-in-out infinite;
+        }
+
+        .tg-eyebrow {
+            color: #ffd166;
+            font-size: 12px;
+            font-weight: 800;
+            letter-spacing: 3px;
+        }
+
+        .tg-booking-btn {
+            display: inline-block;
+            padding: 12px 19px;
+            margin: 8px 8px 0 0;
+            border: none;
+            border-radius: 10px;
+            background: linear-gradient(135deg,#ffe08a,#ffbd35);
+            color: #14213d !important;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 800;
+            cursor: pointer;
+            transition: transform .2s ease;
+        }
+
+        .tg-booking-btn:hover {
+            transform: translateY(-2px);
+        }
+
+        .tg-booking-btn-secondary {
+            background: #ffffff;
+            color: #17315e !important;
+        }
+
+        .tg-booking-btn-danger {
+            background: #ffe6e6;
+            color: #9b1c1c !important;
+        }
+
+        .tg-booking-stats {
+            display: grid;
+            grid-template-columns: repeat(3,minmax(0,1fr));
+            gap: 18px;
+            margin: 30px 0;
+        }
+
+        .tg-stat-card {
+            padding: 22px;
+            border: 1px solid rgba(255,255,255,.15);
+            border-radius: 18px;
+            text-align: center;
+            background: rgba(14,30,73,.88);
+        }
+
+        .tg-stat-icon {
+            font-size: 30px;
+        }
+
+        .tg-stat-card h2 {
+            margin: 10px 0 5px;
+            color: #ffd166;
+            font-size: 28px;
+        }
+
+        .tg-stat-card p {
+            margin: 0;
+            color: #edf1ff;
+        }
+
+        .tg-bookings-heading {
+            margin: 35px 0 20px;
+        }
+
+        .tg-bookings-heading h2 {
+            color: #ffd166;
+            font-size: 27px;
+        }
+
+        .tg-bookings-heading p {
+            color: #edf1ff;
+            line-height: 1.7;
+        }
+
+        .tg-booking-toolbar {
+            display: grid;
+            grid-template-columns: minmax(0,1fr) 210px;
+            gap: 14px;
+            margin-bottom: 24px;
+        }
+
+        .tg-booking-toolbar input,
+        .tg-booking-toolbar select {
+            box-sizing: border-box;
+            width: 100%;
+            min-width: 0;
+            min-height: 48px;
+            padding: 12px 14px;
+            border: 1px solid #d9e1ef;
+            border-radius: 10px;
+            background: #ffffff;
+            color: #17315e;
+            font: inherit;
+        }
+
+        .tg-booking-list {
+            display: grid;
+            grid-template-columns: repeat(2,minmax(0,1fr));
+            gap: 22px;
+        }
+
+        .tg-booking-card {
+            min-width: 0;
+            overflow: hidden;
+            border: 1px solid rgba(255,255,255,.2);
+            border-radius: 19px;
+            background: rgba(255,255,255,.97);
+            color: #17315e;
+            box-shadow: 0 8px 25px rgba(0,0,0,.12);
+            transition: transform .25s ease;
+        }
+
+        .tg-booking-card:hover {
+            transform: translateY(-4px);
+        }
+
+        .tg-booking-card-top {
+            padding: 23px 23px 15px;
+            background: linear-gradient(135deg,rgba(233,241,255,.98),rgba(255,255,255,.99));
+        }
+
+        .tg-booking-card-top h3 {
+            margin: 0 0 8px;
+            color: #17315e;
+            font-size: 22px;
+            overflow-wrap: anywhere;
+        }
+
+        .tg-booking-location {
+            color: #52647b;
+            line-height: 1.6;
+            overflow-wrap: anywhere;
+        }
+
+        .tg-status {
+            display: inline-block;
+            margin-top: 10px;
+            padding: 6px 11px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 800;
+        }
+
+        .tg-status-upcoming {
+            background: #e1f5e7;
+            color: #176534;
+        }
+
+        .tg-status-completed {
+            background: #e5eaff;
+            color: #3447a3;
+        }
+
+        .tg-status-cancelled {
+            background: #ffe4e4;
+            color: #a12020;
+        }
+
+        .tg-booking-card-body {
+            padding: 20px 23px 24px;
+        }
+
+        .tg-booking-details {
+            display: grid;
+            grid-template-columns: repeat(2,minmax(0,1fr));
+            gap: 14px;
+        }
+
+        .tg-detail-item {
+            min-width: 0;
+            padding: 12px;
+            border-radius: 11px;
+            background: #f2f5fb;
+            overflow-wrap: anywhere;
+        }
+
+        .tg-detail-item span {
+            display: block;
+            margin-bottom: 6px;
+            color: #607089;
+            font-size: 12px;
+        }
+
+        .tg-detail-item strong {
+            color: #17315e;
+            font-size: 14px;
+        }
+
+        .tg-total-price {
+            color: #087f5b !important;
+            font-size: 18px !important;
+        }
+
+        .tg-booking-actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 5px;
+            margin-top: 20px;
+        }
+
+        .tg-empty-state {
+            grid-column: 1 / -1;
+            padding: 42px 22px;
+            border: 1px solid rgba(255,255,255,.16);
+            border-radius: 20px;
+            background: rgba(15,31,76,.9);
+            text-align: center;
+        }
+
+        .tg-empty-icon {
+            font-size: 65px;
+            animation: bookingIconFloat 3s ease-in-out infinite;
+        }
+
+        .tg-empty-state h2 {
+            color: #ffd166;
+        }
+
+        .tg-empty-state p {
+            max-width: 550px;
+            margin: 12px auto;
+            color: #edf1ff;
+            line-height: 1.8;
+        }
+
+        .tg-bookings-message {
+            min-height: 22px;
+            margin: 14px 0;
+            color: #ffe08a;
+            line-height: 1.6;
+        }
+
+        .tg-bookings-footer {
+            margin-top: 30px;
+            padding: 24px;
+            border: 1px solid rgba(255,255,255,.13);
+            border-radius: 17px;
+            background: rgba(15,31,76,.8);
+        }
+
+        .tg-bookings-footer p {
+            color: #edf1ff;
+            line-height: 1.8;
+        }
+
+        .tg-bookings-footer a:not(.tg-booking-btn) {
+            color: #ffd166;
+        }
+
+        @keyframes bookingPlaneFloat {
+            0%,100% { transform: translateY(0) rotate(-8deg); }
+            50% { transform: translateY(-9px) rotate(2deg); }
+        }
+
+        @keyframes bookingIconFloat {
+            0%,100% { transform: translateY(0); }
+            50% { transform: translateY(-8px); }
+        }
+
+        @media (max-width:850px) {
+            .tg-booking-list { grid-template-columns: 1fr; }
+        }
+
+        @media (max-width:600px) {
+            .tg-bookings-page { margin: 26px auto; }
+            .tg-bookings-hero { padding: 25px; }
+            .tg-bookings-plane { top: 12px; right: 15px; font-size: 42px; }
+            .tg-booking-stats { grid-template-columns: 1fr; }
+            .tg-booking-toolbar { grid-template-columns: 1fr; }
+            .tg-booking-card-top,
+            .tg-booking-card-body {
+                padding-left: 17px;
+                padding-right: 17px;
+            }
+        }
+
+        @media (max-width:360px) {
+            .tg-booking-details { grid-template-columns: 1fr; }
+        }
+
+        @media (prefers-reduced-motion:reduce) {
+            .tg-booking-card,
+            .tg-booking-btn { transition: none; }
+
+            .tg-bookings-plane,
+            .tg-empty-icon { animation: none; }
+
+            .tg-booking-card:hover,
+            .tg-booking-btn:hover { transform: none; }
+        }
+    </style>
+</head>
+
+<body>
+<header class="navbar">
+    <div class="container nav-container">
+        <a href="index.html" class="logo">
+            <span class="logo-icon">✈</span> TravelGo
+        </a>
+
+        <button class="menu-toggle" type="button"
+                aria-label="Open navigation menu" aria-expanded="false">☰</button>
+
+        <nav class="nav-links">
+            <a href="index.html">Home</a>
+            <a href="destinations.html">Destinations</a>
+            <a href="about.html">About</a>
+            <a href="review.html">Reviews</a>
+        </nav>
+
+        <div class="nav-actions">
+            <a href="login.html" class="btn btn-outline">Login</a>
+            <a href="register.html" class="btn btn-primary">Get Started ↗</a>
+        </div>
+    </div>
+</header>
+
+<main class="tg-bookings-page">
+    <section class="tg-bookings-hero">
+        <span class="tg-eyebrow">YOUR TRAVEL SPACE</span>
+        <h1>🧳 My Bookings</h1>
+        <p>All your travel plans in one place! Review your saved trips, check travel dates, and view your booking records.</p>
+        <span class="tg-bookings-plane" aria-hidden="true">✈️</span>
+        <a href="destinations.html" class="tg-booking-btn">🌍 Explore Destinations</a>
+        <a href="dashboard.html" class="tg-booking-btn tg-booking-btn-secondary">← Dashboard</a>
+    </section>
+
+    <section class="tg-booking-stats" aria-label="Booking summary">
+        <div class="tg-stat-card">
+            <div class="tg-stat-icon">🧳</div>
+            <h2 id="totalBookings">0</h2>
+            <p>Total Bookings</p>
+        </div>
+        <div class="tg-stat-card">
+            <div class="tg-stat-icon">✈️</div>
+            <h2 id="upcomingBookings">0</h2>
+            <p>Upcoming Trips</p>
+        </div>
+        <div class="tg-stat-card">
+            <div class="tg-stat-icon">💰</div>
+            <h2 id="totalAmount">₹0</h2>
+            <p>Active Booking Total</p>
+        </div>
+    </section>
+
+    <section>
+        <div class="tg-bookings-heading">
+            <h2>📋 Your Travel Plans</h2>
+            <p>Search your bookings or filter them by status.</p>
+        </div>
+
+        <div class="tg-booking-toolbar">
+            <input type="search" id="bookingSearch"
+                   placeholder="Search destination or booking ID..."
+                   aria-label="Search bookings">
+
+            <select id="bookingFilter" aria-label="Filter bookings">
+                <option value="all">All Bookings</option>
+                <option value="upcoming">Upcoming</option>
+                <option value="completed">Completed</option>
+                <option value="cancelled">Cancelled</option>
+            </select>
+        </div>
+
+        <p id="bookingMessage" class="tg-bookings-message" role="status"></p>
+        <div id="bookingList" class="tg-booking-list"></div>
+    </section>
+
+    <section class="tg-bookings-footer">
+        <h3 style="color:#ffd166;">💙 TravelGo Travel Planner</h3>
+        <p>Your booking history is retrieved from the TravelGo database. Payment records are demonstrations and do not confirm real payment transactions.</p>
+        <a href="review.html">⭐ Read Traveller Reviews</a>
+    </section>
+</main>
+
+<footer class="footer">
+    <div class="container">
+        <p>© <span id="currentYear"></span> TravelGo | Explore the World ✈️</p>
+    </div>
+</footer>
+
+<script>
+"use strict";
+
+const bookingList = document.getElementById("bookingList");
+const bookingSearch = document.getElementById("bookingSearch");
+const bookingFilter = document.getElementById("bookingFilter");
+const bookingMessage = document.getElementById("bookingMessage");
+
+document.getElementById("currentYear").textContent =
+    new Date().getFullYear();
+
+let allBookings = [];
+let currentUserId = null;
+
+function getLoggedInUser() {
+    try {
+        const saved = localStorage.getItem("tg_logged_in_user");
+
+        if (saved) {
+            const user = JSON.parse(saved);
+
+            if (user && user.id) {
+                return user;
+            }
+        }
+
+        const details = JSON.parse(
+            localStorage.getItem("tg_user_details") || "null"
+        );
+
+        if (details && details.id) {
+            return details;
+        }
+
+        return null;
+    } catch (error) {
+        return null;
+    }
+}
+
+function safeText(value, fallback = "") {
+    return value === null || value === undefined
+        ? fallback
+        : String(value);
+}
+
+function parseDate(value) {
+    if (!value) return null;
+
+    const text = String(value).slice(0, 10);
+
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(text)) return null;
+
+    const [year, month, day] = text.split("-").map(Number);
+    const date = new Date(year, month - 1, day);
+
+    if (
+        date.getFullYear() !== year ||
+        date.getMonth() !== month - 1 ||
+        date.getDate() !== day
+    ) {
+        return null;
+    }
+
+    date.setHours(0, 0, 0, 0);
+    return date;
+}
+
+function getBookingStatus(booking) {
+    const savedStatus = safeText(booking.status)
+        .trim()
+        .toLowerCase();
+
+    if (savedStatus === "cancelled" || savedStatus === "canceled") {
+        return "cancelled";
+    }
+
+    const travelDate = parseDate(booking.travel_date || booking.travelDate);
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    if (travelDate && travelDate < today) {
+        return "completed";
+    }
+
+    return "upcoming";
+}
+
+function formatDate(value) {
+    const parsed = parseDate(value);
+
+    if (!parsed) return safeText(value, "Date not provided");
+
+    return parsed.toLocaleDateString("en-IN", {
+        day: "2-digit",
+        month: "short",
+        year: "numeric"
+    });
+}
+
+function formatMoney(value) {
+    const amount = Number(value);
+
+    if (!Number.isFinite(amount) || amount < 0) return "₹0";
+
+    return "₹" + amount.toLocaleString("en-IN", {
+        maximumFractionDigits: 2
+    });
+}
+
+function element(tag, className, text) {
+    const node = document.createElement(tag);
+
+    if (className) node.className = className;
+    if (text !== undefined) node.textContent = text;
+
+    return node;
+}
+
+function showEmpty(title, description) {
+    const section = element("section", "tg-empty-state");
+    section.append(
+        element("div", "tg-empty-icon", "✈️"),
+        element("h2", "", title),
+        element("p", "", description)
+    );
+
+    const link = element("a", "tg-booking-btn", "Explore Destinations →");
+    link.href = "destinations.html";
+    section.append(link);
+
+    return section;
+}
+
+function updateSummary(bookings) {
+    const active = bookings.filter(
+        booking => getBookingStatus(booking) !== "cancelled"
+    );
+
+    const upcoming = bookings.filter(
+        booking => getBookingStatus(booking) === "upcoming"
+    );
+
+    const total = active.reduce((sum, booking) => {
+        const amount = Number(
+            booking.total_amount ?? booking.totalAmount ?? 0
+        );
+
+        return sum + (Number.isFinite(amount) && amount > 0 ? amount : 0);
+    }, 0);
+
+    document.getElementById("totalBookings").textContent = bookings.length;
+    document.getElementById("upcomingBookings").textContent = upcoming.length;
+    document.getElementById("totalAmount").textContent = formatMoney(total);
+}
+
+function createBookingCard(booking) {
+    const card = element("article", "tg-booking-card");
+
+    const destination = safeText(
+        booking.destination_name || booking.destination || booking.destinationName,
+        "Travel Destination"
+    );
+
+    const location = safeText(booking.location, "Location not provided");
+    const id = safeText(booking.id || booking.bookingId, "Unknown");
+    const date = booking.travel_date || booking.travelDate;
+
+    const persons = Math.max(
+        1,
+        Math.floor(Number(booking.persons) || 1)
+    );
+
+    const amount = booking.total_amount ?? booking.totalAmount ?? 0;
+    const status = getBookingStatus(booking);
+
+    const labels = {
+        upcoming: "Upcoming Trip",
+        completed: "Travel Date Passed",
+        cancelled: "Cancelled"
+    };
+
+    const classes = {
+        upcoming: "tg-status-upcoming",
+        completed: "tg-status-completed",
+        cancelled: "tg-status-cancelled"
+    };
+
+    const top = element("div", "tg-booking-card-top");
+    top.append(
+        element("h3", "", "🌍 " + destination),
+        element("div", "tg-booking-location", "📍 " + location),
+        element("span", "tg-status " + classes[status], labels[status])
+    );
+
+    const body = element("div", "tg-booking-card-body");
+    const details = element("div", "tg-booking-details");
+
+    function addDetail(label, value, valueClass = "") {
+        const item = element("div", "tg-detail-item");
+        item.append(
+            element("span", "", label),
+            element("strong", valueClass, value)
+        );
+        details.append(item);
+    }
+
+    addDetail("Booking ID", "#" + id);
+    addDetail("Travel Date", formatDate(date));
+    addDetail("Travellers", String(persons));
+    addDetail("Total Amount", formatMoney(amount), "tg-total-price");
+
+    body.append(details);
+
+    const actions = element("div", "tg-booking-actions");
+    const destinationButton = element(
+        "a",
+        "tg-booking-btn tg-booking-btn-secondary",
+        "Explore Destinations"
+    );
+
+    destinationButton.href = "destinations.html";
+    actions.append(destinationButton);
+
+    body.append(actions);
+    card.append(top, body);
+
+    return card;
+}
+
+function renderBookings() {
+    updateSummary(allBookings);
+
+    const search = bookingSearch.value.trim().toLowerCase();
+    const filter = bookingFilter.value;
+
+    const filtered = allBookings.filter(booking => {
+        const destination = safeText(
+            booking.destination_name || booking.destination || booking.destinationName
+        );
+
+        const id = safeText(booking.id || booking.bookingId);
+        const matchesSearch = (destination + " " + id)
+            .toLowerCase()
+            .includes(search);
+
+        const matchesFilter =
+            filter === "all" || getBookingStatus(booking) === filter;
+
+        return matchesSearch && matchesFilter;
+    });
+
+    bookingList.replaceChildren();
+
+    if (allBookings.length === 0) {
+        bookingList.append(showEmpty(
+            "Your Journey Starts Here!",
+            "No bookings were found for this account in the database. Once you complete the booking process, your saved trips will appear here."
+        ));
+        return;
+    }
+
+    if (filtered.length === 0) {
+        bookingList.append(showEmpty(
+            "No Matching Bookings",
+            "Try a different search term or booking status."
+        ));
+        return;
+    }
+
+    filtered.forEach(booking => {
+        bookingList.append(createBookingCard(booking));
+    });
+}
+
+async function loadBookings() {
+    const user = getLoggedInUser();
+
+    if (!user || !user.id) {
+        bookingMessage.textContent =
+            "Please log in first to view your booking history.";
+
+        bookingList.replaceChildren(showEmpty(
+            "Login Required",
+            "Log in to your TravelGo account to see your bookings."
+        ));
+
+        return;
+    }
+
+    currentUserId = user.id;
+    bookingMessage.textContent = "Loading your bookings from MySQL...";
+
+    try {
+        const response = await fetch(
+            "/api/bookings?user_id=" + encodeURIComponent(currentUserId),
+            { headers: { "Accept": "application/json" } }
+        );
+
+        const result = await response.json();
+
+        if (!response.ok || result.success === false) {
+            throw new Error(result.message || "Unable to load bookings.");
+        }
+
+        allBookings = Array.isArray(result.bookings)
+            ? result.bookings
+            : [];
+
+        bookingMessage.textContent = allBookings.length
+            ? "Your booking history was loaded from the TravelGo database."
+            : "No database bookings were found for this account.";
+
+        renderBookings();
+    } catch (error) {
+        allBookings = [];
+        updateSummary(allBookings);
+
+        bookingList.replaceChildren(showEmpty(
+            "Unable to Load Bookings",
+            "TravelGo could not retrieve your bookings from the server. Check that the backend is running, then refresh this page."
+        ));
+
+        bookingMessage.textContent =
+            "Database request failed: " + safeText(error.message, "Unknown error");
+    }
+}
+
+bookingSearch.addEventListener("input", renderBookings);
+bookingFilter.addEventListener("change", renderBookings);
+
+loadBookings();
+window.addEventListener("pageshow", loadBookings);
+</script>
+
+</body>
+</html>
+

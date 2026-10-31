@@ -1,0 +1,858 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Book Your Trip | TravelGo</title>
+
+    <link rel="stylesheet" href="../static/css/style.css">
+
+    <style>
+        .booking-container {
+            max-width: 900px;
+            margin: 40px auto;
+            padding: 25px;
+        }
+
+        .booking-container > h1,
+        .booking-container > p {
+            color: #0b2545;
+        }
+
+        .booking-card {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+
+            background: white;
+            padding: 25px;
+            border-radius: 16px;
+
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.10);
+        }
+
+        .destination-image {
+            display: block;
+            width: 100%;
+            height: 300px;
+            object-fit: cover;
+            border-radius: 12px;
+            background: #eef3f8;
+        }
+        /* Destination name */
+.destination-info h2 {
+    color: #0A2A52 !important;
+    margin-top: 18px;
+}
+
+/* Destination description, duration and price */
+.destination-info p,
+.destination-info p span {
+    color: #0A2A52 !important;
+    line-height: 1.7;
+}
+
+/* Labels */
+.destination-info strong {
+    color: #0A2A52 !important;
+}
+
+/* Booking summary heading and details */
+.price-box h3,
+.price-box p {
+    color: #0A2A52 !important;
+}
+
+/* Total amount */
+#totalPrice {
+    color: #166534 !important;
+    font-weight: bold;
+}
+        
+        .booking-form label {
+            display: block;
+            margin-top: 18px;
+            margin-bottom: 7px;
+            font-weight: bold;
+            color: #0b2545;
+        }
+
+        .booking-form input,
+        .booking-form select {
+            width: 100%;
+            min-height: 46px;
+            padding: 12px;
+
+            border: 1px solid #ccc;
+            border-radius: 8px;
+
+            box-sizing: border-box;
+            font-size: 15px;
+            background: white;
+            color: #14233d;
+        }
+
+        .booking-form input:focus,
+        .booking-form select:focus {
+            outline: 3px solid rgba(0, 198, 255, 0.2);
+            border-color: #00a6db;
+        }
+
+        .price-box {
+            margin-top: 20px;
+            padding: 18px;
+
+            background: #f0f7ff;
+            border: 1px solid #dceafa;
+            border-radius: 10px;
+        }
+
+        .price-box h3 {
+            color: #0b2545;
+            margin: 0 0 10px;
+        }
+
+        .price-box p {
+            color: #475569;
+            line-height: 1.7;
+        }
+
+        .price-box hr {
+            border: none;
+            border-top: 1px solid #d5e1ef;
+            margin: 15px 0;
+        }
+
+        #totalPrice {
+            color: #087e55;
+            overflow-wrap: anywhere;
+        }
+
+        .booking-actions {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+
+        .booking-actions button,
+        .booking-actions a {
+            flex: 1;
+            min-width: 120px;
+
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+
+            text-align: center;
+            padding: 13px;
+
+            border: none;
+            border-radius: 8px;
+
+            cursor: pointer;
+            text-decoration: none;
+            font-size: 15px;
+            font-weight: bold;
+        }
+
+        .continue-button {
+            background: #0b2545;
+            color: white;
+        }
+
+        .continue-button:hover {
+            background: #174574;
+        }
+
+        .back-button {
+            background: #e9eef5;
+            color: #0b2545;
+        }
+
+        .back-button:hover {
+            background: #dce5f0;
+        }
+
+        .message {
+            margin-top: 15px;
+            padding: 10px;
+            color: #c0392b;
+            line-height: 1.6;
+            overflow-wrap: anywhere;
+        }
+
+        @media (max-width: 700px) {
+            .booking-card {
+                grid-template-columns: 1fr;
+            }
+
+            .booking-container {
+                padding: 12px;
+            }
+
+            .destination-image {
+                height: 240px;
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            *,
+            *::before,
+            *::after {
+                transition: none !important;
+                animation: none !important;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Navigation -->
+
+    <nav class="navbar">
+        <div class="container">
+
+            <a href="home.html" class="logo">
+                ✈️ TravelGo
+            </a>
+
+            <div class="nav-links">
+                <a href="home.html">Home</a>
+                <a href="destinations.html">Destinations</a>
+                <a href="my_bookings.html">My Bookings</a>
+            </div>
+
+        </div>
+    </nav>
+
+    <!-- Booking Section -->
+
+    <main class="booking-container">
+
+        <h1>🧳 Book Your Trip</h1>
+
+        <h5 style="color:orange">
+            Complete your travel details and get ready for your journey!
+        </h5>
+
+        <div class="booking-card">
+
+            <!-- Destination Details -->
+
+            <section class="destination-info">
+
+                <img
+                    id="destinationImage"
+                    class="destination-image"
+                    src="../static/images/amritsar.jpeg"
+                    alt="Selected destination"
+                >
+
+                <h2 id="destinationName">
+                    Loading destination...
+                </h2>
+
+                <p id="destinationDescription">
+                    Your next adventure starts here!
+                </p>
+
+                <p>
+                    <strong>Duration:</strong>
+                    <span id="destinationDuration">-</span>
+                </p>
+
+                <p>
+                    <strong>Price per person:</strong>
+                    ₹<span id="pricePerPerson">0</span>
+                </p>
+
+            </section>
+
+            <!-- Booking Form -->
+
+            <section>
+
+                <form id="bookingForm" class="booking-form">
+
+                    <label for="travelDate">
+                        Travel Date
+                    </label>
+
+                    <input
+                        type="date"
+                        id="travelDate"
+                        name="travel_date"
+                        required
+                    >
+
+                    <label for="travellers">
+                        Number of Travellers
+                    </label>
+
+                    <select
+                        id="travellers"
+                        name="travellers"
+                        required
+                    >
+                        <option value="1">1 Traveller</option>
+                        <option value="2" selected>2 Travellers</option>
+                        <option value="3">3 Travellers</option>
+                        <option value="4">4 Travellers</option>
+                        <option value="5">5 Travellers</option>
+                        <option value="6">6 Travellers</option>
+                        <option value="7">7 Travellers</option>
+                        <option value="8">8 Travellers</option>
+                        <option value="9">9 Travellers</option>
+                        <option value="10">10 Travellers</option>
+                    </select>
+
+                    <!-- Booking Summary -->
+
+                    <div class="price-box">
+
+                        <h3>Booking Summary</h3>
+
+                        <p>
+                            Price per person:
+                            ₹<span id="summaryPrice">0</span>
+                        </p>
+
+                        <p>
+                            Travellers:
+                            <span id="summaryTravellers">2</span>
+                        </p>
+
+                        <hr>
+
+                        <h3>
+                            Total Amount:
+                            ₹<span id="totalPrice">0</span>
+                        </h3>
+
+                    </div>
+
+                    <p
+                        id="bookingMessage"
+                        class="message"
+                        role="alert"
+                        aria-live="polite">
+                    </p>
+
+                    <div class="booking-actions">
+
+                        <a
+                            href="destination_detail.html"
+                            class="back-button">
+                            ← Back
+                        </a>
+
+                        <button
+                            type="submit"
+                            class="continue-button"
+                            id="continueButton">
+                            Continue →
+                        </button>
+
+                    </div>
+
+                </form>
+
+            </section>
+
+        </div>
+
+    </main>
+
+    <script>
+        "use strict";
+
+        document.addEventListener("DOMContentLoaded", function () {
+
+            // =========================================
+            // ELEMENTS
+            // =========================================
+
+            const destinationNameElement =
+                document.getElementById("destinationName");
+
+            const destinationImage =
+                document.getElementById("destinationImage");
+
+            const destinationDescription =
+                document.getElementById("destinationDescription");
+
+            const destinationDuration =
+                document.getElementById("destinationDuration");
+
+            const pricePerPerson =
+                document.getElementById("pricePerPerson");
+
+            const summaryPrice =
+                document.getElementById("summaryPrice");
+
+            const travellersSelect =
+                document.getElementById("travellers");
+
+            const summaryTravellers =
+                document.getElementById("summaryTravellers");
+
+            const totalPrice =
+                document.getElementById("totalPrice");
+
+            const travelDate =
+                document.getElementById("travelDate");
+
+            const bookingForm =
+                document.getElementById("bookingForm");
+
+            const bookingMessage =
+                document.getElementById("bookingMessage");
+
+            const continueButton =
+                document.getElementById("continueButton");
+
+
+            // =========================================
+            // STORAGE HELPERS
+            // =========================================
+
+            function readStorage(key) {
+                try {
+                    const value = localStorage.getItem(key);
+                    return value ? JSON.parse(value) : null;
+                } catch (error) {
+                    console.error(
+                        "Unable to read saved information:",
+                        key,
+                        error
+                    );
+                    return null;
+                }
+            }
+
+            function showMessage(message) {
+                bookingMessage.textContent = message;
+            }
+
+            function parseAmount(value) {
+                if (
+                    value === undefined ||
+                    value === null ||
+                    value === ""
+                ) {
+                    return null;
+                }
+
+                const number = Number(
+                    String(value).replace(/[₹,\s]/g, "")
+                );
+
+                return Number.isFinite(number) && number >= 0
+                    ? number
+                    : null;
+            }
+
+
+            // =========================================
+            // LOAD SELECTED DESTINATION
+            // =========================================
+
+            const savedDestination =
+                readStorage("tg_selected_destination");
+
+            if (
+                !savedDestination ||
+                typeof savedDestination !== "object" ||
+                !savedDestination.name
+            ) {
+                destinationNameElement.textContent =
+                    "No destination selected";
+
+                destinationDescription.textContent =
+                    "Please return to Destinations and select a trip.";
+
+                bookingForm.querySelectorAll(
+                    "input, select, button"
+                ).forEach(function (element) {
+                    element.disabled = true;
+                });
+
+                showMessage(
+                    "Please select a destination before booking."
+                );
+
+                return;
+            }
+
+            const destination = savedDestination;
+
+            const price = parseAmount(destination.price);
+
+            if (price === null) {
+                destinationNameElement.textContent =
+                    destination.name;
+
+                showMessage(
+                    "The destination price could not be loaded. Please select the destination again."
+                );
+
+                bookingForm.querySelectorAll(
+                    "input, select, button"
+                ).forEach(function (element) {
+                    element.disabled = true;
+                });
+
+                return;
+            }
+
+
+            // =========================================
+            // DISPLAY DESTINATION INFORMATION
+            // =========================================
+
+            destinationNameElement.textContent =
+                destination.name;
+
+            destinationDescription.textContent =
+                destination.description ||
+                "Explore your next adventure!";
+
+            destinationDuration.textContent =
+                destination.duration ||
+                "Not specified";
+
+            pricePerPerson.textContent =
+                price.toLocaleString("en-IN");
+
+            summaryPrice.textContent =
+                price.toLocaleString("en-IN");
+
+
+            // =========================================
+            // DESTINATION IMAGE PATH
+            // =========================================
+
+            if (destination.image) {
+
+                let imagePath = String(destination.image).trim();
+
+                if (
+                    imagePath.startsWith("http://") ||
+                    imagePath.startsWith("https://")
+                ) {
+                    destinationImage.src = imagePath;
+
+                } else {
+
+                    imagePath = imagePath.replace(/\\/g, "/");
+
+                    if (imagePath.startsWith("static/")) {
+                        imagePath = "../" + imagePath;
+
+                    } else if (imagePath.startsWith("../")) {
+                        // Keep the existing relative path.
+
+                    } else if (imagePath.startsWith("/")) {
+                        imagePath = ".." + imagePath;
+
+                    } else if (imagePath.startsWith("images/")) {
+                        imagePath = "../static/" + imagePath;
+
+                    } else {
+                        imagePath = "../static/images/" + imagePath;
+                    }
+
+                    destinationImage.src = imagePath;
+                }
+            }
+
+            destinationImage.onerror = function () {
+                this.onerror = null;
+                this.src = "../static/images/ooty.jpeg";
+            };
+
+
+            // =========================================
+            // MINIMUM TRAVEL DATE
+            // =========================================
+
+            function getLocalDateString(date) {
+                return (
+                    date.getFullYear() + "-" +
+                    String(date.getMonth() + 1).padStart(2, "0") + "-" +
+                    String(date.getDate()).padStart(2, "0")
+                );
+            }
+
+            const today = new Date();
+            const localToday = getLocalDateString(today);
+
+            travelDate.min = localToday;
+
+
+            // =========================================
+            // RESTORE AN EXISTING BOOKING IF AVAILABLE
+            // =========================================
+
+            const existingBooking =
+                readStorage("tg_booking_details") || {};
+
+            // Restore the previous selection only when the saved
+            // destination matches the currently selected destination.
+
+            const savedDestinationId =
+                existingBooking.destination_id ??
+                existingBooking.destinationId ??
+                null;
+
+            const currentDestinationId =
+                destination.id ?? null;
+
+            const savedDestinationName =
+                existingBooking.destination_name ??
+                existingBooking.destinationName ??
+                "";
+
+            const sameDestination =
+                (
+                    savedDestinationId !== null &&
+                    currentDestinationId !== null &&
+                    String(savedDestinationId) ===
+                        String(currentDestinationId)
+                ) ||
+                (
+                    savedDestinationName &&
+                    savedDestinationName === destination.name
+                );
+
+            if (sameDestination) {
+
+                const savedDate =
+                    existingBooking.travel_date ||
+                    existingBooking.travelDate ||
+                    existingBooking.date ||
+                    "";
+
+                if (savedDate && savedDate >= localToday) {
+                    travelDate.value = savedDate;
+                }
+
+                const savedCount = Number(
+                    existingBooking.numberOfTravellers ??
+                    existingBooking.number_of_travellers ??
+                    existingBooking.travellerCount ??
+                    existingBooking.traveller_count ??
+                    existingBooking.travellers
+                );
+
+                if (
+                    Number.isInteger(savedCount) &&
+                    savedCount >= 1 &&
+                    savedCount <= 10
+                ) {
+                    travellersSelect.value =
+                        String(savedCount);
+                }
+            }
+
+
+            // =========================================
+            // UPDATE TOTAL PRICE
+            // =========================================
+
+            function updateTotal() {
+
+                const travellerCount =
+                    Number(travellersSelect.value);
+
+                const total = price * travellerCount;
+
+                summaryTravellers.textContent =
+                    String(travellerCount);
+
+                totalPrice.textContent =
+                    total.toLocaleString("en-IN");
+            }
+
+            travellersSelect.addEventListener(
+                "change",
+                updateTotal
+            );
+
+            updateTotal();
+
+
+            // =========================================
+            // SAVE BOOKING AND OPEN TRAVELLER DETAILS
+            // =========================================
+
+            bookingForm.addEventListener(
+                "submit",
+                function (event) {
+
+                    event.preventDefault();
+                    showMessage("");
+
+                    if (!bookingForm.reportValidity()) {
+                        return;
+                    }
+
+                    const selectedDate = travelDate.value;
+
+                    if (!selectedDate) {
+                        showMessage(
+                            "Please select your travel date."
+                        );
+                        return;
+                    }
+
+                    if (selectedDate < localToday) {
+                        showMessage(
+                            "Please select today or a future date."
+                        );
+                        return;
+                    }
+
+                    // Read the selected count directly from the select.
+                    const travellerCount =
+                        Number(travellersSelect.value);
+
+                    if (
+                        !Number.isInteger(travellerCount) ||
+                        travellerCount < 1 ||
+                        travellerCount > 10
+                    ) {
+                        showMessage(
+                            "Please select between 1 and 10 travellers."
+                        );
+                        return;
+                    }
+
+                    const total = price * travellerCount;
+
+                    // Save a numeric count in several consistent fields.
+                    // Do not save an old traveller array as the count.
+
+                    const bookingDetails = {
+
+                        destination_id: destination.id ?? "",
+                        destinationId: destination.id ?? "",
+
+                        destination_name: destination.name,
+                        destinationName: destination.name,
+
+                        destination_image: destination.image || "",
+                        destinationImage: destination.image || "",
+
+                        travel_date: selectedDate,
+                        travelDate: selectedDate,
+                        date: selectedDate,
+
+                        // All count aliases are NUMBERS.
+                        travellers: travellerCount,
+                        travellerCount: travellerCount,
+                        traveller_count: travellerCount,
+                        numberOfTravellers: travellerCount,
+                        number_of_travellers: travellerCount,
+
+                        price: price,
+                        price_per_person: price,
+                        pricePerPerson: price,
+
+                        // Save total aliases for following pages.
+                        total: total,
+                        total_price: total,
+                        totalAmount: total,
+                        total_amount: total,
+                        amount: total,
+
+                        duration: destination.duration || "",
+                        description: destination.description || "",
+
+                        // These fields are completed by the
+                        // traveller/payment pages.
+                        emailVerified: false,
+                        payment_verified: false,
+                        payment_status: "Not verified"
+                    };
+
+                    try {
+
+                        // Save the selected destination.
+                        localStorage.setItem(
+                            "tg_selected_destination",
+                            JSON.stringify(destination)
+                        );
+
+                        // Save the new booking.
+                        localStorage.setItem(
+                            "tg_booking_details",
+                            JSON.stringify(bookingDetails)
+                        );
+
+                        // CRITICAL FIX:
+                        // Remove traveller records from the previous
+                        // booking so they cannot override the new count.
+                        localStorage.removeItem(
+                            "tg_traveller_details"
+                        );
+
+                        // Update the existing summary before navigation.
+                        updateTotal();
+
+                        // Go to the next page.
+                        window.location.href =
+                            "./travellers.html";
+
+                    } catch (error) {
+
+                        console.error(
+                            "Unable to save booking:",
+                            error
+                        );
+
+                        showMessage(
+                            "Unable to save your booking information. Please try again."
+                        );
+                    }
+                }
+            );
+
+
+            // =========================================
+            // FORMAT DATE
+            // =========================================
+
+            function formatDate(dateString) {
+
+                const match = /^(\d{4})-(\d{2})-(\d{2})$/.exec(
+                    String(dateString)
+                );
+
+                if (match) {
+                    const date = new Date(
+                        Number(match[1]),
+                        Number(match[2]) - 1,
+                        Number(match[3])
+                    );
+
+                    return date.toLocaleDateString("en-IN", {
+                        day: "2-digit",
+                        month: "short",
+                        year: "numeric"
+                    });
+                }
+
+                return dateString;
+            }
+
+        });
+    </script>
+
+</body>
+
+</html>

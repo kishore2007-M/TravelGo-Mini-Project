@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Destinations | TravelGo</title>
+
+    <link rel="stylesheet" href="../static/css/style.css">
+    <script src="../static/js/app.js" defer></script>
+</head>
+
+<body>
+
+    <!-- NAVBAR -->
+    <header class="navbar">
+        <div class="container nav-container">
+
+            <a href="index.html" class="logo">
+                <span class="logo-icon">✈</span>
+                TravelGo
+            </a>
+
+            <button class="menu-toggle"
+                    type="button"
+                    aria-label="Open navigation menu"
+                    aria-expanded="false">
+                ☰
+            </button>
+
+            <nav class="nav-links">
+                <a href="index.html">Home</a>
+                <a href="destinations.html" class="active">Destinations</a>
+                <a href="about.html">About</a>
+                <a href="review.html">Reviews</a>
+            </nav>
+
+            <div class="nav-actions">
+                <a href="login.html" class="btn btn-outline">Login</a>
+                <a href="register.html" class="btn btn-primary">
+                    Get Started ↗
+                </a>
+            </div>
+
+        </div>
+    </header>
+
+
+    <!-- DESTINATION HERO -->
+    <section class="page-hero">
+        <div class="container">
+
+            <span class="eyebrow">YOUR NEXT ADVENTURE</span>
+
+            <h1>Discover Beautiful Destinations</h1>
+
+            <p>
+                From peaceful hill stations to sunny beaches,
+                discover your next unforgettable journey with TravelGo.
+            </p>
+
+            <div class="destination-meta">
+                <span>🌍 37 Destinations</span>
+                <span>✈️ Easy Booking</span>
+                <span>💙 Memorable Experiences</span>
+            </div>
+
+        </div>
+    </section>
+
+
+    <!-- SEARCH AND FILTER -->
+    <section class="section">
+        <div class="container">
+
+            <div class="section-heading">
+                <span class="eyebrow">FIND YOUR PLACE</span>
+                <h2>Where would you like to go?</h2>
+                <p>Search destinations and discover a place you'll love.</p>
+            </div>
+
+            <form id="destinationSearchForm" class="search-panel">
+
+                <div class="search-grid">
+
+                    <div class="field">
+                        <label for="destinationSearch">
+                            Search destination
+                        </label>
+
+                        <input
+                            type="search"
+                            id="destinationSearch"
+                            name="search"
+                            placeholder="Try Ooty, Goa, Kashmir..."
+                        >
+                    </div>
+
+                    <div class="field">
+                        <label for="destinationCategory">
+                            Travel experience
+                        </label>
+
+                        <select id="destinationCategory" name="category">
+                            <option value="all">All experiences</option>
+                            <option value="Mountain">Mountain</option>
+                            <option value="Beach">Beach</option>
+                            <option value="Heritage">Heritage</option>
+                            <option value="Nature">Nature</option>
+                            <option value="Adventure">Adventure</option>
+                            <option value="City">City</option>
+                            <option value="Culture">Culture</option>
+                            <option value="Coastal">Coastal</option>
+                        </select>
+                    </div>
+
+                    <div class="field">
+                        <label for="destinationSort">
+                            Sort by price
+                        </label>
+
+                        <select id="destinationSort">
+                            <option value="default">Recommended</option>
+                            <option value="low">Price: Low to High</option>
+                            <option value="high">Price: High to Low</option>
+                        </select>
+                    </div>
+
+                    <div class="field search-button-field">
+                        <label>&nbsp;</label>
+
+                        <button type="submit" class="btn btn-primary btn-block">
+                            🔍 Find Destinations
+                        </button>
+                    </div>
+
+                </div>
+                 <div class="travelgo-background-animation" aria-hidden="true">
+                <span class="travelgo-float travelgo-plane-one">✈️</span>
+                <span class="travelgo-float travelgo-plane-two">🛫</span>
+                <span class="travelgo-float travelgo-cloud-one">☁️</span>
+                <span class="travelgo-float travelgo-cloud-two">☁️</span>
+                <span class="travelgo-float travelgo-globe">🌎</span>
+                <span class="travelgo-float travelgo-luggage">🧳</span>
+            </div>
+
+            </form>
+
+            <div class="section-heading destination-results-heading">
+                <h2>Explore the World</h2>
+                <p>Choose your destination and start planning your trip.</p>
+            </div>
+
+            <!-- JavaScript renders destination cards here -->
+            <div id="destinationGrid" class="destination-grid"></div>
+
+               <p class="notice">
+    Prices shown are estimates and may differ from actual travel fares.
+    Bookings and payments are not processed through this website.
+                </p>
+
+        </div>
+    </section>
+
+
+    <!-- CALL TO ACTION -->
+    <section class="section">
+        <div class="container">
+
+            <div class="cta">
+                <span class="eyebrow">YOUR STORY STARTS HERE</span>
+
+                <h2>Ready for your next adventure?</h2>
+
+                <p>
+                    Find your favourite destination and make your
+                    next journey memorable.
+                </p>
+
+                <a href="register.html" class="btn btn-white">
+                    Start Exploring →
+                </a>
+            </div>
+
+        </div>
+    </section>
+
+
+    <!-- FOOTER -->
+    <footer class="footer">
+        <div class="container">
+
+            <div class="footer-grid">
+
+                <div>
+                    <a href="index.html" class="logo">
+                        <span class="logo-icon">✈</span>
+                        TravelGo
+                    </a>
+
+                    <p>
+                        Discover beautiful destinations and plan
+                        your next adventure with TravelGo.
+                    </p>
+                </div>
+
+                <div>
+                    <h3>Explore</h3>
+
+                    <div class="footer-links">
+                        <a href="index.html">Home</a>
+                        <a href="destinations.html">Destinations</a>
+                        <a href="about.html">About Us</a>
+                    </div>
+                </div>
+
+                <div>
+                    <h3>Account</h3>
+
+                    <div class="footer-links">
+                        <a href="login.html">Login</a>
+                        <a href="register.html">Register</a>
+                        <a href="my_bookings.html">My Bookings</a>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="footer-bottom">
+                <p>
+                    © <span id="currentYear"></span> TravelGo.
+                    Created for a travel booking project.
+                </p>
+            </div>
+
+        </div>
+    </footer>
+
+
+    <script>
+        // Set the current year.
+        document.getElementById("currentYear").textContent =
+            new Date().getFullYear();
+
+        // Restore search values passed from the homepage.
+        const params = new URLSearchParams(window.location.search);
+
+        const searchInput = document.getElementById("destinationSearch");
+        const categorySelect = document.getElementById("destinationCategory");
+        const sortSelect = document.getElementById("destinationSort");
+
+        if (params.has("search")) {
+            searchInput.value = params.get("search");
+        }
+
+        if (params.has("category")) {
+            const category = params.get("category");
+
+            if ([...categorySelect.options].some(option => option.value === category)) {
+                categorySelect.value = category;
+            }
+        }
+
+        // Apply sorting to the rendered cards.
+        sortSelect.addEventListener("change", function () {
+            const grid = document.getElementById("destinationGrid");
+            if (!grid) return;
+
+            const cards = [...grid.children];
+
+            cards.sort((a, b) => {
+                const priceA = Number(a.dataset.price || 0);
+                const priceB = Number(b.dataset.price || 0);
+
+                if (sortSelect.value === "low") return priceA - priceB;
+                if (sortSelect.value === "high") return priceB - priceA;
+
+                return 0;
+            });
+
+            cards.forEach(card => grid.appendChild(card));
+        });
+    </script>
+
+</body>
+</html>

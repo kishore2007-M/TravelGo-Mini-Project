@@ -1,0 +1,1146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment Confirmation | TravelGo</title>
+
+    <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            min-height: 100vh;
+            padding: 25px 15px;
+            background: linear-gradient(135deg, #071a32, #174a7e, #5369c5);
+            color: #24364b;
+        }
+
+        .navbar {
+            max-width: 1050px;
+            margin: 0 auto 25px;
+            display: flex;
+            justify-content: space-between;
+            gap: 15px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .logo {
+            color: white;
+            text-decoration: none;
+            font-size: 25px;
+            font-weight: bold;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: white;
+            border: 1px solid #ffffff60;
+            padding: 10px 13px;
+            border-radius: 8px;
+            font-size: 14px;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: auto;
+        }
+
+        .card {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 15px 40px #00000030;
+        }
+
+        .header {
+            text-align: center;
+            border-bottom: 1px solid #e1e7ef;
+            padding-bottom: 25px;
+        }
+
+        .icon {
+            width: 75px;
+            height: 75px;
+            border-radius: 50%;
+            background: #dcfce7;
+            color: #15803d;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 42px;
+            margin: 0 auto 15px;
+        }
+
+        h1 {
+            color: #123c68;
+            margin-bottom: 12px;
+        }
+
+        .header p {
+            color: #718096;
+            line-height: 1.7;
+        }
+
+        .status {
+            display: inline-block;
+            margin-top: 15px;
+            padding: 9px 15px;
+            border-radius: 25px;
+            background: #dcfce7;
+            color: #166534;
+            font-weight: bold;
+            font-size: 13px;
+        }
+
+        .status.verified {
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        .status.pending {
+            background: #fee2e2;
+            color: #b91c1c;
+        }
+
+        .section {
+            margin-top: 28px;
+        }
+
+        h2 {
+            color: #123c68;
+            margin-bottom: 15px;
+            font-size: 21px;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 14px;
+        }
+
+        .item {
+            padding: 16px;
+            background: #f5f8fc;
+            border: 1px solid #e2e8f0;
+            border-radius: 10px;
+            min-width: 0;
+        }
+
+        .item small {
+            display: block;
+            color: #718096;
+            margin-bottom: 7px;
+        }
+
+        .item strong {
+            display: block;
+            color: #123c68;
+            overflow-wrap: anywhere;
+        }
+
+        .traveller-list {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 15px;
+        }
+
+        .traveller-card {
+            background: #f8fafc;
+            border: 1px solid #dce6f2;
+            border-radius: 12px;
+            padding: 17px;
+            min-width: 0;
+        }
+
+        .traveller-card h3 {
+            color: #123c68;
+            margin-bottom: 12px;
+            font-size: 17px;
+            overflow-wrap: anywhere;
+        }
+
+        .field {
+            display: flex;
+            justify-content: space-between;
+            gap: 12px;
+            padding: 9px 0;
+            border-bottom: 1px solid #e2e8f0;
+            font-size: 13px;
+        }
+
+        .field:last-child {
+            border-bottom: none;
+        }
+
+        .field span:first-child {
+            color: #718096;
+            flex: 0 0 40%;
+        }
+
+        .field span:last-child {
+            text-align: right;
+            overflow-wrap: anywhere;
+            min-width: 0;
+            font-weight: 600;
+        }
+
+        .amount-box {
+            margin-top: 25px;
+            padding: 22px;
+            border-radius: 12px;
+            background: #e0f2fe;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+            color: #123c68;
+        }
+
+        .amount {
+            font-size: clamp(23px, 4vw, 30px);
+            font-weight: bold;
+            overflow-wrap: anywhere;
+        }
+
+        .email-box {
+            background: #f5f8fc;
+            border: 1px solid #dce6f2;
+            padding: 22px;
+            border-radius: 12px;
+            margin-top: 30px;
+        }
+
+        .email-box p {
+            color: #718096;
+            line-height: 1.7;
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+        }
+
+        input {
+            width: 100%;
+            padding: 13px;
+            border: 1px solid #cbd5e1;
+            border-radius: 8px;
+            font-size: 16px;
+            margin-bottom: 13px;
+        }
+
+        button,
+        .btn {
+            border: none;
+            padding: 13px 17px;
+            border-radius: 8px;
+            font-weight: bold;
+            font-size: 14px;
+            text-decoration: none;
+            cursor: pointer;
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            gap: 7px;
+        }
+
+        .primary {
+            background: #1769aa;
+            color: white;
+        }
+
+        .primary:hover {
+            background: #104e80;
+        }
+
+        .secondary {
+            background: #e2eaf5;
+            color: #123c68;
+        }
+
+        button:disabled {
+            opacity: 0.6;
+            cursor: wait;
+        }
+
+        .buttons {
+            display: flex;
+            gap: 12px;
+            margin-top: 25px;
+            flex-wrap: wrap;
+        }
+
+        #emailStatus {
+            margin-top: 13px;
+            font-size: 14px;
+            line-height: 1.7;
+            overflow-wrap: anywhere;
+        }
+
+        .notice {
+            margin-top: 22px;
+            color: #718096;
+            line-height: 1.7;
+            font-size: 12px;
+        }
+
+        footer {
+            text-align: center;
+            color: #ffffffbb;
+            margin-top: 25px;
+            font-size: 13px;
+        }
+
+        @media (max-width: 650px) {
+            .card {
+                padding: 20px;
+            }
+
+            .grid,
+            .traveller-list {
+                grid-template-columns: 1fr;
+            }
+
+            .buttons .btn {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar">
+        <a href="./home.html" class="logo">✈ TravelGo</a>
+
+        <div class="nav-links">
+            <a href="./home.html">Home</a>
+            <a href="./destinations.html">Destinations</a>
+            <a href="./my_bookings.html">My Bookings</a>
+        </div>
+    </nav>
+
+    <main class="container">
+        <div class="card">
+
+            <header class="header">
+                <div class="icon" id="successIcon">✓</div>
+
+                <h1 id="pageTitle">Booking Confirmation</h1>
+
+                <p id="pageMessage">
+                    Your booking details are displayed below.
+                </p>
+
+                <div class="status pending" id="paymentStatus">
+                    Checking payment status...
+                </div>
+            </header>
+
+            <section class="section">
+                <h2>Booking Summary</h2>
+
+                <div class="grid">
+                    <div class="item">
+                        <small>Destination</small>
+                        <strong id="destination">—</strong>
+                    </div>
+
+                    <div class="item">
+                        <small>Travel Date</small>
+                        <strong id="travelDate">—</strong>
+                    </div>
+
+                    <div class="item">
+                        <small>Number of Travellers</small>
+                        <strong id="travellerCount">—</strong>
+                    </div>
+
+                    <div class="item">
+                        <small>Booking Reference</small>
+                        <strong id="bookingReference">—</strong>
+                    </div>
+                </div>
+
+                <div class="amount-box">
+                    <span>Total Booking Amount</span>
+                    <span class="amount" id="amount">₹0.00</span>
+                </div>
+            </section>
+
+            <section class="section">
+                <h2>All Traveller Details</h2>
+                <div class="traveller-list" id="travellerList"></div>
+            </section>
+
+            <section class="section">
+                <h2>Booking Contact Details</h2>
+
+                <div class="item">
+                    <p>
+                        <strong>Email:</strong>
+                        <span id="contactEmail">—</span>
+                    </p>
+
+                    <br>
+
+                    <p>
+                        <strong>Mobile:</strong>
+                        <span id="contactMobile">—</span>
+                    </p>
+                </div>
+            </section>
+
+            <section class="email-box">
+                <h2>Send Confirmation Email 📧</h2>
+
+                <p>
+                    Send your booking summary, traveller details, and a link
+                    to the full receipt to your email address.
+                </p>
+
+                <form id="emailForm">
+                    <label for="recipientEmail">
+                        Recipient Email Address
+                    </label>
+
+                    <input
+                        type="email"
+                        id="recipientEmail"
+                        placeholder="Enter recipient email address"
+                        autocomplete="email"
+                        required
+                    >
+
+                    <button
+                        type="submit"
+                        id="sendButton"
+                        class="primary"
+                    >
+                        Send Confirmation Email
+                    </button>
+                </form>
+
+                <div id="emailStatus" role="status" aria-live="polite"></div>
+            </section>
+
+            <div class="buttons">
+                <a href="./receipt.html" class="btn primary">
+                    View Full Receipt
+                </a>
+
+                <a href="./destinations.html" class="btn secondary">
+                    Explore Destinations
+                </a>
+
+                <a href="/" class="btn secondary">
+                    Back to Home
+                </a>
+            </div>
+
+            <p class="notice">
+                TravelGo demonstration: this page displays the payment status
+                saved by the application. A green indicator does not
+                independently confirm a bank or UPI transaction. Use fictional
+                identification details while testing.
+            </p>
+
+        </div>
+    </main>
+
+    <footer>
+        © <span id="year"></span> TravelGo
+    </footer>
+    <script>
+    // EmailJS settings
+    const EMAILJS_PUBLIC_KEY = "3FYgNJ90V-rV0PE1K";
+    const EMAILJS_SERVICE_ID = "service_kb2vvcg";
+    const EMAILJS_TEMPLATE_ID = "template_tmr8ssl";
+
+    // Read saved data safely
+    function readStorage(key) {
+        try {
+            const value = localStorage.getItem(key);
+
+            if (!value) return null;
+
+            try {
+                return JSON.parse(value);
+            } catch {
+                return value;
+            }
+        } catch (error) {
+            console.error("Storage read error:", error);
+            return null;
+        }
+    }
+
+    function getValue(object, keys) {
+        if (!object || typeof object !== "object") return "";
+
+        for (const key of keys) {
+            const value = object[key];
+
+            if (
+                value !== undefined &&
+                value !== null &&
+                String(value).trim() !== ""
+            ) {
+                return value;
+            }
+        }
+
+        return "";
+    }
+
+    function firstValue(...values) {
+        return values.find(value =>
+            value !== undefined &&
+            value !== null &&
+            String(value).trim() !== ""
+        ) || "";
+    }
+
+    function money(value) {
+        const number = Number(value);
+
+        return (Number.isFinite(number) ? number : 0)
+            .toLocaleString("en-IN", {
+                style: "currency",
+                currency: "INR",
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2
+            });
+    }
+
+    function readableDate(value) {
+        if (!value) return "Not provided";
+
+        const text = String(value);
+
+        if (/^\d{4}-\d{2}-\d{2}$/.test(text)) {
+            const [year, month, day] = text.split("-");
+            return `${day}-${month}-${year}`;
+        }
+
+        return text;
+    }
+
+    // Normalize traveller details, including proof information.
+    function normalizeTraveller(person) {
+        if (!person || typeof person !== "object") {
+            return {
+                name: String(person || ""),
+                age: "",
+                gender: "",
+                proofType: "",
+                proofReference: ""
+            };
+        }
+
+        // Match property names without case sensitivity.
+        function findProperty(possibleNames) {
+            const keys = Object.keys(person);
+
+            for (const possibleName of possibleNames) {
+                const matchedKey = keys.find(
+                    key => key.toLowerCase() === possibleName.toLowerCase()
+                );
+
+                if (matchedKey !== undefined) {
+                    const value = person[matchedKey];
+
+                    if (
+                        value !== undefined &&
+                        value !== null &&
+                        String(value).trim() !== ""
+                    ) {
+                        return value;
+                    }
+                }
+            }
+
+            return "";
+        }
+
+        return {
+            name: String(findProperty([
+                "name",
+                "fullName",
+                "full_name",
+                "travellerName",
+                "traveller_name",
+                "travelerName",
+                "traveler_name"
+            ]) || ""),
+
+            age: String(findProperty([
+                "age",
+                "travellerAge",
+                "traveller_age"
+            ]) || ""),
+
+            gender: String(findProperty([
+                "gender",
+                "travellerGender",
+                "traveller_gender"
+            ]) || ""),
+
+            proofType: String(findProperty([
+                "proofType",
+                "proof_type",
+                "proofTypeName",
+                "proof_type_name",
+                "idProofType",
+                "id_proof_type",
+                "idProof",
+                "id_proof",
+                "documentType",
+                "document_type",
+                "proof",
+                "identityProof",
+                "identity_proof",
+                "idType",
+                "id_type"
+            ]) || ""),
+
+            proofReference: String(findProperty([
+                "proofReference",
+                "proof_reference",
+                "proofReferenceNumber",
+                "proof_reference_number",
+                "proofNumber",
+                "proof_number",
+                "proofNo",
+                "proof_no",
+                "idProofNumber",
+                "id_proof_number",
+                "idProofReference",
+                "id_proof_reference",
+                "documentNumber",
+                "document_number",
+                "referenceNumber",
+                "reference_number",
+                "identityNumber",
+                "identity_number",
+                "idNumber",
+                "id_number"
+            ]) || "")
+        };
+    }
+
+    // Create a traveller information row.
+    function addField(card, labelText, valueText) {
+        const row = document.createElement("div");
+        row.className = "field";
+
+        const label = document.createElement("span");
+        label.textContent = labelText;
+
+        const value = document.createElement("span");
+
+        value.textContent =
+            valueText !== undefined &&
+            valueText !== null &&
+            String(valueText).trim() !== ""
+                ? String(valueText)
+                : "Not provided";
+
+        row.append(label, value);
+        card.appendChild(row);
+    }
+
+    // Display every traveller.
+    function renderTravellers(list) {
+        const container = document.getElementById("travellerList");
+        container.replaceChildren();
+
+        if (list.length === 0) {
+            const message = document.createElement("p");
+
+            message.textContent =
+                "No traveller list was found. Please check the saved traveller details.";
+
+            container.appendChild(message);
+            return;
+        }
+
+        list.forEach((person, index) => {
+            const card = document.createElement("article");
+            card.className = "traveller-card";
+
+            const heading = document.createElement("h3");
+
+            heading.textContent =
+                `Traveller ${index + 1}: ${person.name || "Name not provided"}`;
+
+            card.appendChild(heading);
+
+            addField(card, "Full Name", person.name);
+            addField(card, "Age", person.age);
+            addField(card, "Gender", person.gender);
+            addField(card, "Proof Type", person.proofType);
+            addField(card, "Proof Reference", person.proofReference);
+
+            container.appendChild(card);
+        });
+    }
+
+    // Load saved booking data.
+    const booking = readStorage("tg_booking_details") || {};
+    const travellerData = readStorage("tg_traveller_details") || {};
+    console.log(
+    "Saved traveller details:",
+    localStorage.getItem("tg_traveller_details")
+);
+console.log(
+    "Saved booking details:",
+    localStorage.getItem("tg_booking_details")
+);
+    const selectedDestination = readStorage("tg_selected_destination") || {};
+    const userDetails = readStorage("tg_user_details") || {};
+
+    // Find the saved traveller list.
+    const possibleTravellerLists = [
+        travellerData.travellers,
+        booking.travellers,
+        travellerData.travellerDetails,
+        booking.travellerDetails,
+        travellerData.passengers,
+        booking.passengers
+    ];
+
+    let rawTravellers = [];
+
+    for (const list of possibleTravellerLists) {
+        if (Array.isArray(list) && list.length > 0) {
+            rawTravellers = list;
+            break;
+        }
+    }
+
+    let travellers = rawTravellers
+        .map(normalizeTraveller)
+        .filter(person => person.name);
+        console.log("Traveller data:", JSON.stringify(travellerData.travellers));
+        console.log("Booking data:", JSON.stringify(booking.travellers));
+        console.log("Normalized travellers:", JSON.stringify(travellers));
+
+    // Fallback for older bookings with one traveller.
+    if (travellers.length === 0) {
+        const oldName = firstValue(
+            getValue(travellerData, [
+                "travellerName",
+                "traveller_name",
+                "name",
+                "fullName"
+            ]),
+            getValue(booking, [
+                "travellerName",
+                "traveller_name",
+                "name",
+                "fullName"
+            ])
+        );
+
+        if (oldName) {
+            travellers = [
+                normalizeTraveller({
+                    ...travellerData,
+                    ...booking,
+                    name: oldName
+                })
+            ];
+        }
+    }
+
+    // Destination and travel date.
+    const destination = firstValue(
+        getValue(travellerData, [
+            "destinationName",
+            "destination_name"
+        ]),
+        getValue(booking, [
+            "destinationName",
+            "destination_name",
+            "destination"
+        ]),
+        getValue(selectedDestination, [
+            "name",
+            "title",
+            "destinationName"
+        ]),
+        typeof selectedDestination === "string"
+            ? selectedDestination
+            : ""
+    ) || "Not provided";
+
+    const travelDate = firstValue(
+        getValue(travellerData, [
+            "travelDate",
+            "travel_date"
+        ]),
+        getValue(booking, [
+            "travelDate",
+            "travel_date",
+            "date"
+        ])
+    );
+
+    // Contact information.
+    const contactEmail = firstValue(
+        getValue(travellerData, [
+            "contactEmail",
+            "email"
+        ]),
+        getValue(booking, [
+            "contactEmail",
+            "email"
+        ]),
+        getValue(userDetails, [
+            "email"
+        ]),
+        readStorage("tg_user_email")
+    );
+
+    const contactMobile = firstValue(
+        getValue(travellerData, [
+            "contactMobile",
+            "mobile",
+            "phone"
+        ]),
+        getValue(booking, [
+            "contactMobile",
+            "mobile",
+            "phone"
+        ]),
+        getValue(userDetails, [
+            "phone",
+            "mobile"
+        ])
+    );
+
+    // Number of travellers.
+    const count = travellers.length || Number(firstValue(
+        getValue(travellerData, [
+            "numberOfTravellers",
+            "travellerCount",
+            "traveller_count",
+            "number_of_travellers"
+        ]),
+        getValue(booking, [
+            "numberOfTravellers",
+            "travellerCount",
+            "traveller_count",
+            "number_of_travellers"
+        ])
+    )) || 0;
+
+    // Total amount.
+    let totalAmount = Number(firstValue(
+        getValue(travellerData, [
+            "totalAmount",
+            "total_amount",
+            "amount"
+        ]),
+        getValue(booking, [
+            "totalAmount",
+            "total_amount",
+            "amount"
+        ])
+    ));
+
+    if (!Number.isFinite(totalAmount) || totalAmount <= 0) {
+        const price = Number(firstValue(
+            getValue(travellerData, [
+                "pricePerPerson",
+                "price_per_person"
+            ]),
+            getValue(booking, [
+                "pricePerPerson",
+                "price_per_person",
+                "price"
+            ])
+        ));
+
+        totalAmount = Number.isFinite(price) ? price * count : 0;
+    }
+        // Check saved payment status without changing the payment process.
+    const paymentText = String(firstValue(
+        getValue(booking, [
+            "payment_status",
+            "paymentStatus",
+            "payment_status_text",
+            "transaction_status"
+        ]),
+        getValue(travellerData, [
+            "payment_status",
+            "paymentStatus",
+            "payment_status_text",
+            "transaction_status"
+        ])
+    ) || "").trim().toLowerCase();
+
+    const verifiedValues = [
+        booking.payment_verified,
+        booking.paymentVerified,
+        booking.payment_success,
+        booking.paymentSuccess,
+        travellerData.payment_verified,
+        travellerData.paymentVerified,
+        travellerData.payment_success,
+        travellerData.paymentSuccess
+    ];
+
+    const explicitVerified = verifiedValues.some(value =>
+        value === true ||
+        value === 1 ||
+        (
+            typeof value === "string" &&
+            ["true", "1", "yes", "verified"].includes(
+                value.trim().toLowerCase()
+            )
+        )
+    );
+
+    const successfulStatuses = [
+        "successful",
+        "success",
+        "paid",
+        "completed",
+        "verified",
+        "payment successful",
+        "demo"
+    ];
+
+    const paymentSuccessful =
+        explicitVerified || successfulStatuses.includes(paymentText);
+
+    const paymentStatus = paymentSuccessful
+        ? "✓ Payment Successful"
+        : "Payment Not Verified";
+
+    const statusElement = document.getElementById("paymentStatus");
+
+    statusElement.textContent = paymentStatus;
+    statusElement.classList.toggle("verified", paymentSuccessful);
+    statusElement.classList.toggle("pending", !paymentSuccessful);
+
+    document.getElementById("successIcon").textContent =
+        paymentSuccessful ? "✓" : "💳";
+
+    // Booking reference.
+    let bookingReference = firstValue(
+        getValue(booking, [
+            "bookingReference",
+            "booking_reference",
+            "reference"
+        ]),
+        getValue(travellerData, [
+            "bookingReference",
+            "booking_reference",
+            "reference"
+        ])
+    );
+
+    if (!bookingReference) {
+        bookingReference = "TG-" + Date.now().toString().slice(-9);
+
+        booking.bookingReference = bookingReference;
+        booking.booking_reference = bookingReference;
+
+        try {
+            localStorage.setItem(
+                "tg_booking_details",
+                JSON.stringify(booking)
+            );
+        } catch (error) {
+            console.error("Unable to save booking reference:", error);
+        }
+    }
+
+    // Encode receipt information for the receipt page.
+    function encodeBooking(bookingObject) {
+        const json = JSON.stringify(bookingObject);
+        const bytes = new TextEncoder().encode(json);
+
+        let binary = "";
+
+        bytes.forEach(byte => {
+            binary += String.fromCharCode(byte);
+        });
+
+        return btoa(binary)
+            .replace(/\+/g, "-")
+            .replace(/\//g, "_")
+            .replace(/=+$/g, "");
+    }
+
+    const shareableBooking = {
+        bookingReference: bookingReference,
+        destination: destination,
+        travelDate: readableDate(travelDate),
+        travellerCount: count,
+        totalAmount: totalAmount,
+        contactEmail: contactEmail || "",
+        contactMobile: contactMobile || "",
+        paymentStatus: paymentStatus,
+        paymentSuccessful: paymentSuccessful,
+        travellers: travellers
+    };
+
+    const receiptUrl = new URL(
+        "./receipt.html",
+        window.location.href
+    );
+
+    receiptUrl.searchParams.set(
+        "booking",
+        encodeBooking(shareableBooking)
+    );
+
+    const receiptLink = receiptUrl.href;
+
+    // Display booking summary.
+    document.getElementById("pageTitle").textContent =
+        paymentSuccessful
+            ? "Booking Confirmation!"
+            : "Booking Details";
+
+    document.getElementById("pageMessage").textContent =
+        paymentSuccessful
+            ? "Your demo payment status is successful. Review your booking details below."
+            : "Your booking details are displayed below. Payment success has not been confirmed in the saved data.";
+
+    document.getElementById("destination").textContent = destination;
+    document.getElementById("travelDate").textContent =
+        readableDate(travelDate);
+
+    document.getElementById("travellerCount").textContent = String(count);
+    document.getElementById("bookingReference").textContent =
+        bookingReference;
+
+    document.getElementById("amount").textContent = money(totalAmount);
+
+    document.getElementById("contactEmail").textContent =
+        contactEmail || "Not provided";
+
+    document.getElementById("contactMobile").textContent =
+        contactMobile || "Not provided";
+
+    document.getElementById("year").textContent =
+        new Date().getFullYear();
+
+    // Display traveller details.
+    renderTravellers(travellers);
+
+    // Prepare traveller information for the email.
+    const travellerDetailsForEmail = travellers.map((person, index) => {
+        return [
+            `TRAVELLER ${index + 1}`,
+            `Name: ${person.name || "Not provided"}`,
+            `Age: ${person.age || "Not provided"}`,
+            `Gender: ${person.gender || "Not provided"}`,
+            `Proof Type: ${person.proofType || "Not provided"}`,
+            `Proof Reference: ${person.proofReference || "Not provided"}`
+        ].join("\n");
+    }).join("\n\n");
+
+    // Send confirmation email using your existing EmailJS settings.
+    document.getElementById("emailForm").addEventListener(
+        "submit",
+        async function(event) {
+            event.preventDefault();
+
+            const recipientEmail = document
+                .getElementById("recipientEmail")
+                .value.trim();
+
+            const status = document.getElementById("emailStatus");
+            const button = document.getElementById("sendButton");
+
+            if (!recipientEmail) {
+                status.textContent = "Please enter an email address.";
+                status.style.color = "#b91c1c";
+                return;
+            }
+
+            if (!window.emailjs) {
+                status.textContent =
+                    "EmailJS did not load. Please check your internet connection.";
+
+                status.style.color = "#b91c1c";
+                return;
+            }
+
+            button.disabled = true;
+            button.textContent = "Sending Email...";
+
+            status.textContent = "Preparing confirmation email...";
+            status.style.color = "#475569";
+
+            try {
+                emailjs.init({
+                    publicKey: EMAILJS_PUBLIC_KEY
+                });
+
+                const templateParams = {
+                    email: recipientEmail,
+                    to_email: recipientEmail,
+                    user_name: travellers[0]?.name || "TravelGo Traveller",
+                    name: travellers[0]?.name || "TravelGo Traveller",
+                    booking_reference: bookingReference,
+                    destination: destination,
+                    travel_date: readableDate(travelDate),
+                    travellers: String(count),
+                    amount: money(totalAmount),
+                    payment_status: paymentStatus,
+                    traveller_details: travellerDetailsForEmail,
+                    receipt_link: receiptLink
+                };
+
+                await emailjs.send(
+                    EMAILJS_SERVICE_ID,
+                    EMAILJS_TEMPLATE_ID,
+                    templateParams
+                );
+
+                status.textContent =
+                    "Confirmation email sent! Check your inbox.";
+
+                status.style.color = "#15803d";
+
+            } catch (error) {
+                console.error("EmailJS error:", error);
+
+                status.textContent =
+                    "Email was not sent. Check your EmailJS settings and monthly quota.";
+
+                status.style.color = "#b91c1c";
+
+            } finally {
+                button.disabled = false;
+                button.textContent = "Send Confirmation Email";
+            }
+        }
+    );
+</script>
+
+</body>
+</html>

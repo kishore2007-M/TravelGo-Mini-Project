@@ -1,0 +1,973 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>TravelGo Full Receipt</title>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: #edf2f8;
+            color: #25364a;
+            padding: 25px 15px;
+        }
+
+        .page {
+            max-width: 900px;
+            margin: auto;
+        }
+
+        .top {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .logo {
+            font-size: 24px;
+            color: #123c68;
+            font-weight: bold;
+            text-decoration: none;
+        }
+
+        .actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .btn {
+            border: none;
+            padding: 12px 16px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: bold;
+            text-decoration: none;
+            cursor: pointer;
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .blue {
+            color: white;
+            background: #1769aa;
+        }
+
+        .light {
+            color: #123c68;
+            background: #e2eaf5;
+        }
+
+        .receipt {
+            padding: 30px;
+            border-radius: 16px;
+            background: white;
+            box-shadow: 0 8px 28px #142d5015;
+        }
+
+        .receipt-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            flex-wrap: wrap;
+            gap: 18px;
+            padding-bottom: 24px;
+            border-bottom: 2px dashed #d5deea;
+        }
+
+        h1 {
+            color: #123c68;
+            font-size: 29px;
+            margin-bottom: 8px;
+        }
+
+        .muted {
+            color: #718096;
+            line-height: 1.7;
+            font-size: 14px;
+        }
+
+        .ref-box {
+            max-width: 100%;
+            border: 1px solid #cce0fb;
+            border-radius: 10px;
+            padding: 13px 15px;
+            background: #edf5ff;
+            overflow-wrap: anywhere;
+        }
+
+        .ref-box small {
+            display: block;
+            color: #64748b;
+            margin-bottom: 6px;
+        }
+
+        .ref-box strong {
+            color: #123c68;
+        }
+
+        .section {
+            margin-top: 27px;
+        }
+
+        h2 {
+            color: #123c68;
+            font-size: 20px;
+            margin-bottom: 15px;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 14px;
+        }
+
+        .item {
+            min-width: 0;
+            padding: 15px;
+            background: #f6f8fb;
+            border: 1px solid #e3eaf2;
+            border-radius: 10px;
+        }
+
+        .item small {
+            display: block;
+            color: #718096;
+            margin-bottom: 7px;
+        }
+
+        .item strong {
+            display: block;
+            overflow-wrap: anywhere;
+            color: #253d59;
+        }
+
+        .traveller-list {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 14px;
+        }
+
+        .traveller-card {
+            border: 1px solid #dce6f2;
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 17px;
+            min-width: 0;
+            break-inside: avoid;
+        }
+
+        .traveller-card h3 {
+            color: #123c68;
+            margin-bottom: 12px;
+            font-size: 17px;
+            overflow-wrap: anywhere;
+        }
+
+        .field {
+            display: flex;
+            justify-content: space-between;
+            gap: 12px;
+            padding: 8px 0;
+            border-bottom: 1px solid #e3eaf2;
+            font-size: 13px;
+        }
+
+        .field:last-child {
+            border-bottom: none;
+        }
+
+        .field .label {
+            flex: 0 0 42%;
+            color: #718096;
+        }
+
+        .field .value {
+            flex: 1;
+            min-width: 0;
+            text-align: right;
+            overflow-wrap: anywhere;
+            font-weight: 600;
+        }
+
+        .warning {
+            grid-column: 1 / -1;
+            color: #92400e;
+            background: #fff7ed;
+            border: 1px solid #fed7aa;
+            border-radius: 10px;
+            padding: 17px;
+            line-height: 1.7;
+        }
+
+        .contact-box {
+            background: #f8fafc;
+            border: 1px solid #e3eaf2;
+            border-radius: 10px;
+            padding: 17px;
+            line-height: 1.9;
+            overflow-wrap: anywhere;
+        }
+
+        .total-box {
+            background: #e0f2fe;
+            border: 1px solid #bae6fd;
+            border-radius: 12px;
+            padding: 22px;
+            margin-top: 28px;
+        }
+
+        .total-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .total-row strong {
+            color: #123c68;
+        }
+
+        .amount {
+            color: #123c68;
+            font-size: clamp(22px, 4vw, 30px);
+            font-weight: bold;
+            overflow-wrap: anywhere;
+        }
+
+        .payment-status {
+            margin-top: 18px;
+            border-radius: 9px;
+            padding: 15px;
+            line-height: 1.7;
+            font-size: 14px;
+        }
+
+        .success {
+            color: #166534;
+            background: #dcfce7;
+            border: 1px solid #86efac;
+        }
+
+        .pending {
+            color: #075985;
+            background: #e0f2fe;
+            border: 1px solid #7dd3fc;
+        }
+
+        .notice {
+            margin-top: 22px;
+            color: #718096;
+            font-size: 12px;
+            line-height: 1.7;
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 22px;
+            color: #718096;
+            font-size: 13px;
+        }
+
+        @media (max-width: 650px) {
+            .receipt {
+                padding: 20px;
+            }
+
+            .grid,
+            .traveller-list {
+                grid-template-columns: 1fr;
+            }
+
+            .actions {
+                width: 100%;
+            }
+
+            .actions .btn {
+                flex: 1;
+            }
+        }
+
+        @media print {
+            body {
+                background: white;
+                padding: 0;
+            }
+
+            .top,
+            .notice-screen {
+                display: none !important;
+            }
+
+            .receipt {
+                box-shadow: none;
+                padding: 10px;
+            }
+
+            .traveller-card,
+            .item,
+            .total-box,
+            .payment-status {
+                break-inside: avoid;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<main class="page">
+
+    <div class="top">
+        <a href="./home.html" class="logo">✈ TravelGo</a>
+
+        <div class="actions">
+            <a href="./payment_success.html" class="btn light">
+                Back to Confirmation
+            </a>
+
+            <button type="button" id="downloadPdf" class="btn blue">
+                Download PDF Receipt
+            </button>
+        </div>
+    </div>
+
+    <article class="receipt" id="receiptContent">
+
+        <header class="receipt-header">
+            <div>
+                <h1>TravelGo Receipt</h1>
+                <p class="muted">Booking confirmation and traveller information</p>
+                <p class="muted" id="receiptDate"></p>
+            </div>
+
+            <div class="ref-box">
+                <small>BOOKING REFERENCE</small>
+                <strong id="bookingReference">—</strong>
+            </div>
+        </header>
+
+        <section class="section">
+            <h2>Trip Summary</h2>
+
+            <div class="grid">
+                <div class="item">
+                    <small>Destination</small>
+                    <strong id="destination">—</strong>
+                </div>
+
+                <div class="item">
+                    <small>Travel Date</small>
+                    <strong id="travelDate">—</strong>
+                </div>
+
+                <div class="item">
+                    <small>Number of Travellers</small>
+                    <strong id="travellerCount">—</strong>
+                </div>
+
+                <div class="item">
+                    <small>Lead Traveller</small>
+                    <strong id="leadTraveller">—</strong>
+                </div>
+            </div>
+        </section>
+
+        <section class="section">
+            <h2>All Traveller Details</h2>
+
+            <div id="travellerList" class="traveller-list"></div>
+        </section>
+
+        <section class="section">
+            <h2>Booking Contact Details</h2>
+
+            <div class="contact-box">
+                <div><strong>Email:</strong> <span id="contactEmail">—</span></div>
+                <div><strong>Mobile:</strong> <span id="contactMobile">—</span></div>
+            </div>
+        </section>
+
+        <section class="total-box">
+            <div class="total-row">
+                <strong>Total Booking Amount</strong>
+                <span class="amount" id="amount">₹0.00</span>
+            </div>
+
+            <div id="paymentStatus" class="payment-status pending"></div>
+        </section>
+
+        <p class="notice">
+            This is a demonstration receipt generated by TravelGo. Its payment
+            status comes from the project data and is not independent bank or
+            UPI transaction verification. Use fictional proof information.
+        </p>
+
+    </article>
+
+    <footer>
+        © <span id="year"></span> TravelGo
+    </footer>
+
+</main>
+
+<script>
+    function readStorage(key) {
+        try {
+            const raw = localStorage.getItem(key);
+
+            if (!raw) return null;
+
+            try {
+                return JSON.parse(raw);
+            } catch {
+                return raw;
+            }
+        } catch {
+            return null;
+        }
+    }
+
+    function getValue(object, keys) {
+        if (!object || typeof object !== "object") return "";
+
+        for (const key of keys) {
+            const value = object[key];
+
+            if (
+                value !== undefined &&
+                value !== null &&
+                String(value).trim() !== ""
+            ) {
+                return value;
+            }
+        }
+
+        return "";
+    }
+
+    function firstValue(...values) {
+        return values.find(value =>
+            value !== undefined &&
+            value !== null &&
+            String(value).trim() !== ""
+        ) || "";
+    }
+
+    function money(value) {
+        const number = Number(value);
+
+        return (Number.isFinite(number) ? number : 0)
+            .toLocaleString("en-IN", {
+                style: "currency",
+                currency: "INR",
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2
+            });
+    }
+
+    function decodeBooking(encoded) {
+        let base64 = encoded
+            .replace(/-/g, "+")
+            .replace(/_/g, "/");
+
+        while (base64.length % 4 !== 0) {
+            base64 += "=";
+        }
+
+        const binary = atob(base64);
+        const bytes = Uint8Array.from(
+            binary,
+            character => character.charCodeAt(0)
+        );
+
+        const json = new TextDecoder().decode(bytes);
+        const data = JSON.parse(json);
+
+        if (!data || typeof data !== "object") {
+            throw new Error("Invalid booking data.");
+        }
+
+        return data;
+    }
+
+    function normalizeTraveller(person) {
+        if (!person || typeof person !== "object") {
+            return {
+                name: String(person || ""),
+                age: "",
+                gender: "",
+                proofType: "",
+                proofReference: ""
+            };
+        }
+
+        return {
+            name: String(getValue(person, [
+                "name", "fullName", "full_name",
+                "travellerName", "traveller_name"
+            ]) || ""),
+
+            age: String(getValue(person, ["age"]) || ""),
+
+            gender: String(getValue(person, ["gender"]) || ""),
+
+            proofType: String(getValue(person, [
+                "proofType", "proof_type",
+                "idProofType", "id_proof_type"
+            ]) || ""),
+
+            proofReference: String(getValue(person, [
+                "proofReference", "proof_reference",
+                "proofNumber", "proof_number",
+                "idProof", "id_proof"
+            ]) || "")
+        };
+    }
+
+    function addField(card, labelText, valueText) {
+        const row = document.createElement("div");
+        row.className = "field";
+
+        const label = document.createElement("span");
+        label.className = "label";
+        label.textContent = labelText;
+
+        const value = document.createElement("span");
+        value.className = "value";
+        value.textContent = valueText || "Not provided";
+
+        row.append(label, value);
+        card.appendChild(row);
+    }
+
+    function showTravellers(list) {
+        const container = document.getElementById("travellerList");
+        container.replaceChildren();
+
+        if (!list.length) {
+            const warning = document.createElement("div");
+            warning.className = "warning";
+            warning.textContent =
+                "Traveller details were not found in the link. " +
+                "Please return to the TravelGo booking flow and send a new confirmation link.";
+
+            container.appendChild(warning);
+            return;
+        }
+
+        list.forEach((person, index) => {
+            const card = document.createElement("article");
+            card.className = "traveller-card";
+
+            const heading = document.createElement("h3");
+            heading.textContent =
+                `Traveller ${index + 1}: ${person.name || "Name not provided"}`;
+
+            card.appendChild(heading);
+
+            addField(card, "Full Name", person.name);
+            addField(card, "Age", person.age);
+            addField(card, "Gender", person.gender);
+            addField(card, "Proof Type", person.proofType);
+            addField(card, "Proof Reference", person.proofReference);
+
+            container.appendChild(card);
+        });
+    }
+
+    /*
+      If the recipient opens the email link, use the booking data
+      embedded in its "booking" query parameter.
+      Otherwise, fall back to the current browser's saved demo booking.
+    */
+    const parameters = new URLSearchParams(window.location.search);
+    const bookingToken = parameters.get("booking");
+
+    let booking = null;
+    let fromShareLink = false;
+
+    if (bookingToken) {
+        try {
+            booking = decodeBooking(bookingToken);
+            fromShareLink = true;
+        } catch (error) {
+            console.error("Could not read the receipt link:", error);
+        }
+    }
+
+    if (!booking) {
+        const storedBooking = readStorage("tg_booking_details") || {};
+        const storedTravellerData = readStorage("tg_traveller_details") || {};
+        const storedDestination = readStorage("tg_selected_destination") || {};
+        const storedUser = readStorage("tg_user_details") || {};
+
+        let storedTravellers = [];
+
+        if (Array.isArray(storedTravellerData.travellers)) {
+            storedTravellers = storedTravellerData.travellers;
+        } else if (Array.isArray(storedBooking.travellers)) {
+            storedTravellers = storedBooking.travellers;
+        } else if (Array.isArray(storedTravellerData.travellerDetails)) {
+            storedTravellers = storedTravellerData.travellerDetails;
+        }
+
+        const normalized = storedTravellers
+            .map(normalizeTraveller)
+            .filter(person => person.name);
+
+        const destination = firstValue(
+            getValue(storedTravellerData, ["destinationName", "destination_name"]),
+            getValue(storedBooking, ["destinationName", "destination_name", "destination"]),
+            getValue(storedDestination, ["name", "title", "destinationName"]),
+            typeof storedDestination === "string" ? storedDestination : ""
+        );
+
+        const date = firstValue(
+            getValue(storedTravellerData, ["travelDate", "travel_date"]),
+            getValue(storedBooking, ["travelDate", "travel_date", "date"])
+        );
+
+        const total = Number(firstValue(
+            getValue(storedTravellerData, ["totalAmount", "total_amount", "amount"]),
+            getValue(storedBooking, ["totalAmount", "total_amount", "amount"])
+        )) || 0;
+
+        booking = {
+            bookingReference: firstValue(
+                getValue(storedBooking, ["bookingReference", "booking_reference"]),
+                getValue(storedTravellerData, ["bookingReference", "booking_reference"])
+            ) || "TG-DEMO",
+            destination: destination || "Not provided",
+            travelDate: date || "Not provided",
+            travellerCount: normalized.length || Number(firstValue(
+                getValue(storedTravellerData, [
+                    "numberOfTravellers", "travellerCount", "traveller_count"
+                ]),
+                getValue(storedBooking, [
+                    "numberOfTravellers", "travellerCount", "traveller_count"
+                ])
+            )) || 0,
+            totalAmount: total,
+            contactEmail: firstValue(
+                getValue(storedTravellerData, ["contactEmail", "email"]),
+                getValue(storedBooking, ["contactEmail", "email"]),
+                getValue(storedUser, ["email"]),
+                readStorage("tg_user_email")
+            ),
+            contactMobile: firstValue(
+                getValue(storedTravellerData, ["contactMobile", "mobile", "phone"]),
+                getValue(storedBooking, ["contactMobile", "mobile", "phone"])
+            ),
+            paymentStatus: firstValue(
+                getValue(storedBooking, ["payment_status", "paymentStatus"]),
+                getValue(storedTravellerData, ["payment_status", "paymentStatus"])
+            ) || "Not verified",
+            paymentSuccessful:
+                storedBooking.payment_verified === true ||
+                storedTravellerData.payment_verified === true,
+            travellers: normalized
+        };
+    }
+
+    const travellers = Array.isArray(booking.travellers)
+        ? booking.travellers.map(normalizeTraveller).filter(person => person.name)
+        : [];
+
+    const destination = booking.destination || "Not provided";
+    const travelDate = booking.travelDate || "Not provided";
+    const count = travellers.length || Number(booking.travellerCount) || 0;
+    const totalAmount = Number(booking.totalAmount) || 0;
+    const bookingReference = booking.bookingReference || "TG-DEMO";
+
+    const paymentSuccessful = booking.paymentSuccessful === true;
+
+    document.getElementById("bookingReference").textContent = bookingReference;
+    document.getElementById("destination").textContent = destination;
+    document.getElementById("travelDate").textContent = travelDate;
+    document.getElementById("travellerCount").textContent = String(count);
+
+    document.getElementById("leadTraveller").textContent =
+        travellers.length ? travellers[0].name : "Not provided";
+
+    document.getElementById("contactEmail").textContent =
+        booking.contactEmail || "Not provided";
+
+    document.getElementById("contactMobile").textContent =
+        booking.contactMobile || "Not provided";
+
+    document.getElementById("amount").textContent = money(totalAmount);
+
+    document.getElementById("receiptDate").textContent =
+        "Receipt opened on " + new Date().toLocaleDateString("en-IN");
+
+    document.getElementById("year").textContent =
+        new Date().getFullYear();
+
+    const paymentStatusElement = document.getElementById("paymentStatus");
+
+    if (paymentSuccessful) {
+        paymentStatusElement.className = "payment-status success";
+        paymentStatusElement.textContent =
+            "Payment status: Successful — recorded by the TravelGo demo.";
+    } else {
+        paymentStatusElement.className = "payment-status pending";
+        paymentStatusElement.textContent =
+            "Payment status: verified.";
+    }
+
+    showTravellers(travellers);
+
+    if (fromShareLink) {
+        document.title = "TravelGo Shared Booking Receipt";
+    }
+
+    document.getElementById("downloadPdf").addEventListener(
+        "click",
+        downloadPdf
+    );
+
+    function downloadPdf() {
+        if (!window.jspdf || !window.jspdf.jsPDF) {
+            alert("PDF library did not load. Check your internet connection.");
+            return;
+        }
+
+        const { jsPDF } = window.jspdf;
+
+        const pdf = new jsPDF({
+            orientation: "portrait",
+            unit: "mm",
+            format: "a4"
+        });
+
+        const pageWidth = pdf.internal.pageSize.getWidth();
+        const pageHeight = pdf.internal.pageSize.getHeight();
+        const left = 15;
+        const right = pageWidth - 15;
+        const contentWidth = right - left;
+
+        let y = 20;
+
+        function pageHeader(continued = false) {
+            pdf.setFont("helvetica", "bold");
+            pdf.setFontSize(18);
+            pdf.setTextColor(18, 60, 104);
+
+            pdf.text(
+                continued
+                    ? "TravelGo Receipt — Continued"
+                    : "TravelGo Booking Receipt",
+                left,
+                15
+            );
+
+            pdf.setDrawColor(190, 204, 221);
+            pdf.line(left, 19, right, 19);
+
+            y = 27;
+        }
+
+        function ensureSpace(height) {
+            if (y + height > pageHeight - 15) {
+                pdf.addPage();
+                pageHeader(true);
+            }
+        }
+
+        function sectionTitle(title) {
+            ensureSpace(13);
+
+            pdf.setFont("helvetica", "bold");
+            pdf.setFontSize(12);
+            pdf.setTextColor(18, 60, 104);
+            pdf.text(title, left, y);
+
+            y += 8;
+        }
+
+        function labelValue(label, value) {
+            const safeValue = String(value || "Not provided");
+            const labelWidth = 37;
+            const availableWidth = contentWidth - labelWidth;
+
+            pdf.setFont("helvetica", "normal");
+            pdf.setFontSize(9);
+
+            const lines = pdf.splitTextToSize(
+                safeValue,
+                availableWidth
+            );
+
+            const rowHeight = Math.max(6, lines.length * 4.4 + 1);
+
+            ensureSpace(rowHeight + 2);
+
+            pdf.setFont("helvetica", "bold");
+            pdf.setTextColor(90, 105, 125);
+            pdf.text(label, left, y);
+
+            pdf.setFont("helvetica", "normal");
+            pdf.setTextColor(37, 54, 74);
+            pdf.text(lines, left + labelWidth, y);
+
+            y += rowHeight;
+        }
+
+        function travellerSection(person, index) {
+            ensureSpace(38);
+
+            pdf.setFillColor(248, 250, 252);
+            pdf.setDrawColor(218, 228, 240);
+
+            pdf.roundedRect(
+                left,
+                y - 4,
+                contentWidth,
+                8,
+                2,
+                2,
+                "FD"
+            );
+
+            pdf.setFont("helvetica", "bold");
+            pdf.setFontSize(10);
+            pdf.setTextColor(18, 60, 104);
+
+            pdf.text(
+                `Traveller ${index + 1}: ${person.name || "Name not provided"}`,
+                left + 3,
+                y + 1
+            );
+
+            y += 10;
+
+            labelValue("Age", person.age);
+            labelValue("Gender", person.gender);
+            labelValue("Proof Type", person.proofType);
+            labelValue("Proof Ref.", person.proofReference);
+
+            y += 3;
+        }
+
+        pageHeader();
+
+        labelValue("Booking Ref.", bookingReference);
+        labelValue("Destination", destination);
+        labelValue("Travel Date", travelDate);
+        labelValue("Traveller Count", String(count));
+        labelValue("Lead Traveller",
+            travellers.length ? travellers[0].name : "Not provided");
+        labelValue("Contact Email", booking.contactEmail);
+        labelValue("Contact Mobile", booking.contactMobile);
+
+        y += 4;
+
+        sectionTitle("All Traveller Details");
+
+        if (travellers.length) {
+            travellers.forEach((person, index) => {
+                travellerSection(person, index);
+            });
+        } else {
+            labelValue("Traveller Details", "No saved traveller details found.");
+        }
+
+        ensureSpace(28);
+
+        const boxY = y;
+
+        pdf.setFillColor(224, 242, 254);
+        pdf.setDrawColor(186, 230, 253);
+
+        pdf.roundedRect(
+            left,
+            boxY,
+            contentWidth,
+            22,
+            3,
+            3,
+            "FD"
+        );
+
+        pdf.setFont("helvetica", "bold");
+        pdf.setFontSize(10);
+        pdf.setTextColor(18, 60, 104);
+        pdf.text("TOTAL BOOKING AMOUNT", left + 4, boxY + 9);
+
+        const pdfAmount = "INR " + totalAmount.toLocaleString("en-IN", {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2
+        });
+
+        pdf.setFontSize(13);
+        pdf.text(pdfAmount, right - 4, boxY + 17, {
+            align: "right"
+        });
+
+        y += 29;
+        ensureSpace(20);
+
+        if (paymentSuccessful) {
+            pdf.setFillColor(220, 252, 231);
+            pdf.setDrawColor(134, 239, 172);
+            pdf.setTextColor(22, 101, 52);
+        } else {
+            pdf.setFillColor(224, 242, 254);
+            pdf.setDrawColor(125, 211, 252);
+            pdf.setTextColor(7, 89, 133);
+        }
+
+        pdf.roundedRect(left, y, contentWidth, 12, 2, 2, "FD");
+
+        pdf.setFont("helvetica", "bold");
+        pdf.setFontSize(9);
+
+        pdf.text(
+            paymentSuccessful
+                ? "Payment status: Successful — TravelGo demo"
+                : "Payment status: Not independently verified",
+            left + 4,
+            y + 7.5
+        );
+
+        y += 18;
+
+        const disclaimer =
+            "Demo receipt: this document reflects information supplied to TravelGo. " +
+            "It does not independently verify a bank or UPI transaction.";
+
+        pdf.setFont("helvetica", "normal");
+        pdf.setFontSize(8);
+        pdf.setTextColor(100, 110, 125);
+
+        const disclaimerLines = pdf.splitTextToSize(disclaimer, contentWidth);
+
+        ensureSpace(disclaimerLines.length * 4 + 2);
+
+        pdf.text(disclaimerLines, left, y);
+
+        const safeRef = String(bookingReference)
+            .replace(/[^a-z0-9-_]/gi, "-");
+
+        pdf.save("TravelGo-Receipt-" + safeRef + ".pdf");
+    }
+</script>
+
+</body>
+</html>

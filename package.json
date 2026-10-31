@@ -1,0 +1,29 @@
+{
+  "name": "travelgo-mini-project",
+  "version": "1.0.0",
+  "description": "Travel Booking System using Node.js, Express and MySQL",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kishore2007-M/TravelGo-Mini-Project.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/kishore2007-M/TravelGo-Mini-Project/issues"
+  },
+  "homepage": "https://github.com/kishore2007-M/TravelGo-Mini-Project#readme",
+  "dependencies": {
+    "bcryptjs": "^3.0.3",
+    "dotenv": "^18.0.9",
+    "express": "^5.3.0",
+    "mysql2": "^3.24.6",
+    "nodemailer": "^10.3.1"
+  }
+}

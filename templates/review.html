@@ -1,0 +1,966 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Traveller Reviews | TravelGo</title>
+
+    <link rel="stylesheet" href="../static/css/style.css">
+
+    <style>
+        .reviews-page {
+            max-width: 1100px;
+            width: 92%;
+            margin: 45px auto;
+            color: #ffffff;
+        }
+
+        .reviews-hero {
+            padding: 35px 25px;
+            margin-bottom: 30px;
+            text-align: center;
+            border: 1px solid rgba(255,255,255,.18);
+            border-radius: 22px;
+            background: rgba(13, 29, 70, .85);
+        }
+
+        .reviews-hero h1 {
+            color: #ffd166;
+            font-size: clamp(28px, 5vw, 42px);
+            margin: 0 0 12px;
+        }
+
+        .reviews-hero p {
+            color: #f1f5ff;
+            line-height: 1.8;
+        }
+
+        .reviews-summary {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 18px;
+            margin-bottom: 28px;
+        }
+
+        .summary-card {
+            padding: 24px;
+            text-align: center;
+            border-radius: 18px;
+            border: 1px solid rgba(255,255,255,.15);
+            background: rgba(13, 29, 70, .85);
+        }
+
+        .summary-card h2 {
+            color: #ffd166;
+            font-size: 32px;
+            margin: 5px 0;
+        }
+
+        .summary-card p {
+            color: #eef3ff;
+            margin-bottom: 0;
+        }
+
+        .review-toolbar {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 25px;
+        }
+
+        .review-toolbar input {
+            width: 100%;
+            min-width: 0;
+            padding: 14px;
+            box-sizing: border-box;
+            border-radius: 10px;
+            border: 1px solid #d7dfee;
+            background: #ffffff;
+            color: #172554;
+            font: inherit;
+        }
+
+        .review-list {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 20px;
+        }
+
+        .review-card {
+            padding: 23px;
+            border-radius: 18px;
+            background: rgba(255,255,255,.97);
+            color: #17315e;
+            border: 1px solid rgba(255,255,255,.35);
+            transition: transform .25s ease;
+            overflow-wrap: anywhere;
+        }
+
+        .review-card:hover {
+            transform: translateY(-4px);
+        }
+
+        .review-destination {
+            color: #17315e;
+            font-size: 21px;
+            margin: 0 0 10px;
+        }
+
+        .review-stars {
+            color: #e4a700;
+            letter-spacing: 3px;
+            font-size: 22px;
+        }
+
+        .review-rating {
+            color: #52647b;
+            font-size: 14px;
+            margin-left: 7px;
+        }
+
+        .review-author {
+            color: #52647b;
+            font-size: 14px;
+            margin: 12px 0;
+        }
+
+        .review-text {
+            color: #34445c;
+            line-height: 1.8;
+            white-space: pre-wrap;
+            margin-bottom: 0;
+        }
+
+        .empty-reviews {
+            padding: 35px 20px;
+            text-align: center;
+            border-radius: 18px;
+            background: rgba(13, 29, 70, .9);
+            grid-column: 1 / -1;
+        }
+
+        .empty-reviews h2 {
+            color: #ffd166;
+        }
+
+        .empty-reviews p {
+            color: #f1f5ff;
+            line-height: 1.8;
+        }
+
+        .review-button {
+            display: inline-block;
+            padding: 13px 20px;
+            margin-top: 12px;
+            border-radius: 10px;
+            background: linear-gradient(135deg, #ffd166, #ffb703);
+            color: #14213d;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        .reviews-footer-links {
+            margin-top: 30px;
+            text-align: center;
+        }
+
+        .reviews-footer-links a {
+            display: inline-block;
+            margin: 8px 12px;
+            color: #ffffff;
+        }
+
+        .review-error {
+            color: #ffffff;
+            padding: 25px;
+            text-align: center;
+            background: rgba(120, 30, 30, .85);
+            border-radius: 18px;
+            grid-column: 1 / -1;
+            line-height: 1.8;
+        }
+
+        .review-submit-section {
+            margin: 0 0 28px;
+            padding: 26px;
+            border: 1px solid rgba(255,255,255,.15);
+            border-radius: 18px;
+            background: rgba(13, 29, 70, .85);
+        }
+
+        .review-submit-section h2 {
+            margin-top: 0;
+            color: #ffd166;
+        }
+
+        .review-form {
+            display: grid;
+            gap: 14px;
+        }
+
+        .review-form label {
+            display: block;
+            margin-bottom: 7px;
+            color: #f1f5ff;
+            font-weight: 600;
+        }
+
+        .review-form select,
+        .review-form textarea {
+            width: 100%;
+            box-sizing: border-box;
+            padding: 13px;
+            border: 1px solid #d7dfee;
+            border-radius: 10px;
+            background: #fff;
+            color: #172554;
+            font: inherit;
+        }
+
+        .review-form textarea {
+            min-height: 110px;
+            resize: vertical;
+        }
+
+        .star-rating {
+            display: flex;
+            flex-direction: row-reverse;
+            justify-content: flex-end;
+            gap: 5px;
+            width: fit-content;
+        }
+
+        .star-rating input {
+            position: absolute;
+            opacity: 0;
+            width: 1px;
+            height: 1px;
+        }
+
+        .star-rating label {
+            color: #9aa8bd;
+            font-size: 38px;
+            line-height: 1.2;
+            cursor: pointer;
+            margin: 0;
+            transition: color .15s ease, transform .15s ease;
+        }
+
+        .star-rating label:hover,
+        .star-rating label:hover ~ label,
+        .star-rating input:checked ~ label {
+            color: #ffd166;
+        }
+
+        .star-rating label:hover {
+            transform: scale(1.08);
+        }
+
+        .star-rating input:focus-visible + label {
+            outline: 2px solid #ffffff;
+            outline-offset: 3px;
+            border-radius: 4px;
+        }
+
+        .review-form button {
+            justify-self: start;
+            border: 0;
+            cursor: pointer;
+            font: inherit;
+        }
+
+        .review-form button:disabled {
+            opacity: .65;
+            cursor: wait;
+        }
+
+        .review-form-message {
+            margin: 0;
+            line-height: 1.6;
+            color: #f1f5ff;
+        }
+
+        .review-form-message.error {
+            color: #ffb4b4;
+        }
+
+        .review-form-message.success {
+            color: #a7f3d0;
+        }
+
+        .review-login-note {
+            color: #f1f5ff;
+            line-height: 1.8;
+        }
+
+        @media (max-width: 700px) {
+            .reviews-summary,
+            .review-list {
+                grid-template-columns: 1fr;
+            }
+
+            .reviews-hero {
+                padding: 25px 18px;
+            }
+
+            .review-toolbar {
+                flex-direction: column;
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            .review-card {
+                transition: none;
+            }
+
+            .review-card:hover {
+                transform: none;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- NAVBAR -->
+    <header class="navbar">
+        <div class="container nav-container">
+
+            <a href="index.html" class="logo">
+                <span class="logo-icon">✈</span>
+                TravelGo
+            </a>
+
+            <button class="menu-toggle"
+                    type="button"
+                    aria-label="Open navigation menu"
+                    aria-expanded="false">
+                ☰
+            </button>
+
+            <nav class="nav-links">
+                <a href="index.html">Home</a>
+                <a href="destinations.html">Destinations</a>
+                <a href="about.html">About</a>
+                <a href="review.html" class="active">Reviews</a>
+            </nav>
+
+            <div class="nav-actions">
+                <a href="login.html" class="btn btn-outline">Login</a>
+
+                <a href="register.html" class="btn btn-primary">
+                    Get Started ↗
+                </a>
+            </div>
+
+        </div>
+    </header>
+
+    <main class="reviews-page">
+
+        <!-- PAGE HEADING -->
+        <section class="reviews-hero">
+
+            <span class="eyebrow">TRAVELLER EXPERIENCES</span>
+
+            <h1>⭐ Stories from Our Travellers</h1>
+
+            <p>
+                Discover what travellers have shared about their
+                favourite destinations and travel experiences.
+            </p>
+
+        </section>
+
+        <!-- REVIEW SUMMARY -->
+        <section class="reviews-summary">
+
+            <div class="summary-card">
+                <h2 id="totalReviews">0</h2>
+                <p>Traveller Reviews</p>
+            </div>
+
+            <div class="summary-card">
+                <h2 id="overallRating">0.0 / 5</h2>
+                <p>Average Star Rating</p>
+
+                <div id="overallStars" class="review-stars">
+                    ☆☆☆☆☆
+                </div>
+            </div>
+
+        </section>
+
+        <!-- SUBMIT A REVIEW (requires login) -->
+        <section class="review-submit-section" aria-labelledby="submitReviewHeading">
+            <h2 id="submitReviewHeading">✍️ Share Your Travel Experience</h2>
+            <div id="reviewLoginNote" class="review-login-note" hidden>
+                Please <a href="login.html" style="color:#ffd166;font-weight:bold;">log in</a>
+                to submit a review. Your review will be saved to the TravelGo database.
+            </div>
+            <form id="reviewForm" class="review-form" hidden>
+                <div>
+                    <label for="reviewDestination">Choose destination</label>
+                    <select id="reviewDestination" name="destination_id" required>
+                        <option value="">Loading destinations...</option>
+                    </select>
+                </div>
+                <div>
+                    <label id="ratingLabel">Your rating — click a star</label>
+                    <div class="star-rating" role="radiogroup" aria-labelledby="ratingLabel">
+                        <input type="radio" id="rating5" name="ratingStars" value="5">
+                        <label for="rating5" title="5 stars — Excellent" aria-label="5 stars">★</label>
+                        <input type="radio" id="rating4" name="ratingStars" value="4">
+                        <label for="rating4" title="4 stars — Very good" aria-label="4 stars">★</label>
+                        <input type="radio" id="rating3" name="ratingStars" value="3">
+                        <label for="rating3" title="3 stars — Good" aria-label="3 stars">★</label>
+                        <input type="radio" id="rating2" name="ratingStars" value="2">
+                        <label for="rating2" title="2 stars — Fair" aria-label="2 stars">★</label>
+                        <input type="radio" id="rating1" name="ratingStars" value="1">
+                        <label for="rating1" title="1 star — Poor" aria-label="1 star">★</label>
+                    </div>
+                    <input type="hidden" id="reviewRating" name="rating" value="">
+                    <p id="selectedRatingText" class="review-form-message">No rating selected</p>
+                </div>
+                <div>
+                    <label for="reviewComment">Your review (optional)</label>
+                    <textarea id="reviewComment" name="comment" maxlength="2000"
+                        placeholder="Share what you enjoyed about your trip..."></textarea>
+                </div>
+                <button id="submitReviewButton" type="submit" class="review-button">Submit Review</button>
+                <p id="reviewFormMessage" class="review-form-message" role="status" aria-live="polite"></p>
+            </form>
+        </section>
+
+        <!-- SEARCH -->
+        <div class="review-toolbar">
+
+            <input
+                type="search"
+                id="reviewSearch"
+                placeholder="Search by destination, name or feedback..."
+                aria-label="Search traveller reviews">
+
+        </div>
+
+        <!-- DATABASE REVIEWS -->
+        <section
+            id="reviewList"
+            class="review-list"
+            aria-live="polite">
+
+            <div class="empty-reviews">
+                <h2>Loading Reviews...</h2>
+                <p>Retrieving reviews from the TravelGo database.</p>
+            </div>
+
+        </section>
+
+        <div class="reviews-footer-links">
+            <a href="destinations.html">← Explore Destinations</a>
+            <a href="index.html">Back to Home</a>
+        </div>
+
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="footer">
+        <div class="container">
+            <p>
+                © <span id="currentYear"></span>
+                TravelGo | Explore the World ✈️
+            </p>
+        </div>
+    </footer>
+
+    <script>
+        "use strict";
+
+        const reviewList = document.getElementById("reviewList");
+        const searchInput = document.getElementById("reviewSearch");
+
+        let databaseReviews = [];
+
+        const reviewForm = document.getElementById("reviewForm");
+        const reviewLoginNote = document.getElementById("reviewLoginNote");
+        const destinationSelect = document.getElementById("reviewDestination");
+        const ratingSelect = document.getElementById("reviewRating");
+        const ratingRadios = document.querySelectorAll('input[name="ratingStars"]');
+        const selectedRatingText = document.getElementById("selectedRatingText");
+        const commentInput = document.getElementById("reviewComment");
+
+        ratingRadios.forEach(radio => {
+            radio.addEventListener("change", () => {
+                ratingSelect.value = radio.value;
+                selectedRatingText.textContent = radio.value + " / 5 stars selected";
+            });
+        });
+        const submitReviewButton = document.getElementById("submitReviewButton");
+        const reviewFormMessage = document.getElementById("reviewFormMessage");
+
+        document.getElementById("currentYear").textContent =
+            new Date().getFullYear();
+
+
+        // Safely create HTML elements.
+        function createElement(tag, className, text) {
+
+            const element = document.createElement(tag);
+
+            if (className) {
+                element.className = className;
+            }
+
+            if (text !== undefined) {
+                element.textContent = text;
+            }
+
+            return element;
+        }
+
+
+        // Format destination names.
+        function formatDestinationName(name) {
+
+            return String(name || "Destination")
+                .replace(/[-_]+/g, " ")
+                .replace(/\b\w/g, character =>
+                    character.toUpperCase()
+                );
+        }
+
+
+        // Display star ratings.
+        function starsFor(rating) {
+
+            const score = Math.max(
+                0,
+                Math.min(5, Math.round(Number(rating) || 0))
+            );
+
+            return "★".repeat(score) +
+                   "☆".repeat(5 - score);
+        }
+
+
+        // Support common review field names returned by the API.
+        function normalizeReview(review) {
+
+            return {
+                destinationId: Number(review.destination_id) || 0,
+                destination: formatDestinationName(
+                    review.destination_name ||
+                    review.destination ||
+                    review.name_of_destination ||
+                    (review.destination_id ? "Destination #" + review.destination_id : "Destination")
+                ),
+
+                name: String(
+                    review.user_name ||
+                    review.reviewer_name ||
+                    review.name ||
+                    "Traveller"
+                ),
+
+                text: String(
+                    review.comment ||
+                    review.review ||
+                    review.feedback ||
+                    review.text ||
+                    ""
+                ),
+
+                rating: Math.max(
+                    1,
+                    Math.min(
+                        5,
+                        Number(review.rating) || 1
+                    )
+                ),
+
+                date: String(
+                    review.review_date ||
+                    review.created_at ||
+                    review.date ||
+                    ""
+                )
+            };
+        }
+
+
+        function showFormMessage(message, type = "") {
+            reviewFormMessage.textContent = message;
+            reviewFormMessage.className = "review-form-message" + (type ? " " + type : "");
+        }
+
+        // Only logged-in users can submit reviews. This uses the existing session API.
+        async function setupReviewForm() {
+            try {
+                const meResponse = await fetch("/api/me", {
+                    headers: { "Accept": "application/json" }
+                });
+
+                if (meResponse.status === 401 || !meResponse.ok) {
+                    reviewLoginNote.hidden = false;
+                    return;
+                }
+
+                const meResult = await meResponse.json();
+                if (!meResult.success || !meResult.user) {
+                    reviewLoginNote.hidden = false;
+                    return;
+                }
+
+                reviewForm.hidden = false;
+
+                const destinationsResponse = await fetch("/api/destinations", {
+                    headers: { "Accept": "application/json" }
+                });
+                const destinationsResult = await destinationsResponse.json();
+
+                if (!destinationsResponse.ok || !Array.isArray(destinationsResult.destinations)) {
+                    throw new Error(destinationsResult.message || "Could not load destinations.");
+                }
+
+                destinationSelect.replaceChildren();
+                destinationSelect.append(
+                    createElement("option", "", "Choose a destination")
+                );
+                destinationSelect.options[0].value = "";
+
+                destinationsResult.destinations.forEach(destination => {
+                    const option = document.createElement("option");
+                    option.value = String(destination.id);
+                    option.textContent = destination.name + (destination.location ? " — " + destination.location : "");
+                    destinationSelect.append(option);
+                });
+
+                if (destinationsResult.destinations.length === 0) {
+                    showFormMessage("No destinations are available yet. Add destinations before submitting a review.", "error");
+                    submitReviewButton.disabled = true;
+                }
+            } catch (error) {
+                console.error("Could not prepare review form:", error);
+                reviewForm.hidden = false;
+                destinationSelect.replaceChildren();
+                const option = document.createElement("option");
+                option.value = "";
+                option.textContent = "Unable to load destinations";
+                destinationSelect.append(option);
+                showFormMessage(error.message || "Unable to prepare the review form.", "error");
+                submitReviewButton.disabled = true;
+            }
+        }
+
+        reviewForm.addEventListener("submit", async event => {
+            event.preventDefault();
+            showFormMessage("");
+
+            const destinationId = Number(destinationSelect.value);
+            const rating = Number(ratingSelect.value);
+            const comment = commentInput.value.trim();
+
+            if (!Number.isInteger(destinationId) || destinationId <= 0) {
+                showFormMessage("Please choose a destination.", "error");
+                return;
+            }
+            if (!Number.isInteger(rating) || rating < 1 || rating > 5) {
+                showFormMessage("Please choose a rating from 1 to 5 stars.", "error");
+                return;
+            }
+
+            submitReviewButton.disabled = true;
+            submitReviewButton.textContent = "Saving Review...";
+
+            try {
+                const response = await fetch("/api/reviews", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "Accept": "application/json"
+                    },
+                    body: JSON.stringify({
+                        destination_id: destinationId,
+                        rating,
+                        comment
+                    })
+                });
+
+                const result = await response.json();
+                if (!response.ok || !result.success) {
+                    if (response.status === 401) {
+                        throw new Error("Please log in again before submitting a review.");
+                    }
+                    throw new Error(result.message || "Could not save your review.");
+                }
+
+                showFormMessage("Your review was saved successfully!", "success");
+                reviewForm.reset();
+                ratingSelect.value = "";
+                selectedRatingText.textContent = "No rating selected";
+                await loadReviews();
+            } catch (error) {
+                showFormMessage(error.message || "Unable to save the review.", "error");
+            } finally {
+                submitReviewButton.disabled = false;
+                submitReviewButton.textContent = "Submit Review";
+            }
+        });
+
+        // Retrieve reviews from the Node.js backend.
+        // The backend must return reviews from MySQL.
+        async function loadReviews() {
+
+            reviewList.replaceChildren();
+
+            const loading = createElement(
+                "div",
+                "empty-reviews"
+            );
+
+            loading.append(
+                createElement(
+                    "h2",
+                    "",
+                    "Loading Reviews..."
+                ),
+                createElement(
+                    "p",
+                    "",
+                    "Connecting to the TravelGo database."
+                )
+            );
+
+            reviewList.append(loading);
+
+            try {
+
+                const response = await fetch("/api/reviews", {
+                    method: "GET",
+                    headers: {
+                        "Accept": "application/json"
+                    }
+                });
+
+                let result;
+
+                try {
+                    result = await response.json();
+                } catch {
+                    throw new Error(
+                        "The server did not return a valid JSON response."
+                    );
+                }
+
+                if (!response.ok) {
+
+                    throw new Error(
+                        result.message ||
+                        result.error ||
+                        "Unable to retrieve reviews from the server."
+                    );
+                }
+
+                if (result.success === false) {
+
+                    throw new Error(
+                        result.message ||
+                        "The server could not load reviews."
+                    );
+                }
+
+                // Accept either { reviews: [...] } or an array.
+                let rows = Array.isArray(result)
+                    ? result
+                    : result.reviews;
+
+                if (!Array.isArray(rows)) {
+
+                    throw new Error(
+                        "The reviews API did not return a reviews array. " +
+                        "Please check the GET /api/reviews route in server.js."
+                    );
+                }
+
+                databaseReviews = rows.map(normalizeReview);
+
+                renderReviews();
+
+            } catch (error) {
+
+                console.error(
+                    "Error loading database reviews:",
+                    error
+                );
+
+                databaseReviews = [];
+
+                document.getElementById("totalReviews").textContent = "0";
+                document.getElementById("overallRating").textContent = "0.0 / 5";
+                document.getElementById("overallStars").textContent = "☆☆☆☆☆";
+
+                reviewList.replaceChildren();
+
+                // Keep the page friendly if the API is temporarily unavailable.
+                // Technical details are logged in the browser console, not shown to visitors.
+                const empty = createElement("div", "empty-reviews");
+                empty.append(
+                    createElement("h2", "", "✈️ Reviews will appear here"),
+                    createElement("p", "", "We could not retrieve reviews right now. Please refresh the page in a moment.")
+                );
+                reviewList.append(empty);
+            }
+        }
+
+
+        // Render database reviews and update the rating summary.
+        function renderReviews() {
+
+            const reviews = databaseReviews;
+
+            document.getElementById("totalReviews").textContent =
+                reviews.length;
+
+            const average = reviews.length
+                ? reviews.reduce(
+                    (sum, review) => sum + review.rating,
+                    0
+                ) / reviews.length
+                : 0;
+
+            document.getElementById("overallRating").textContent =
+                average.toFixed(1) + " / 5";
+
+            document.getElementById("overallStars").textContent =
+                starsFor(average);
+
+            const searchTerm =
+                searchInput.value.trim().toLowerCase();
+
+            const filteredReviews = reviews.filter(review => {
+
+                const searchableText = [
+                    review.destination,
+                    review.name,
+                    review.text
+                ].join(" ").toLowerCase();
+
+                return searchableText.includes(searchTerm);
+            });
+
+            reviewList.replaceChildren();
+
+            if (filteredReviews.length === 0) {
+
+                const empty = createElement(
+                    "div",
+                    "empty-reviews"
+                );
+
+                const heading = createElement(
+                    "h2",
+                    "",
+                    reviews.length === 0
+                        ? "✈️ No Reviews Yet"
+                        : "No Matching Reviews"
+                );
+
+                const description = createElement(
+                    "p",
+                    "",
+                    reviews.length === 0
+                        ? "No reviews have been returned by the database yet."
+                        : "Try searching with another name, destination or keyword."
+                );
+
+                empty.append(heading, description);
+
+                if (reviews.length === 0) {
+
+                    const button = createElement(
+                        "a",
+                        "review-button",
+                        "Explore Destinations →"
+                    );
+
+                    button.href = "destinations.html";
+
+                    empty.append(button);
+                }
+
+                reviewList.append(empty);
+
+                return;
+            }
+
+            // Latest reviews first when the API returns newest first.
+            filteredReviews.forEach(review => {
+
+                const card = createElement(
+                    "article",
+                    "review-card"
+                );
+
+                const destination = createElement(
+                    "h2",
+                    "review-destination",
+                    "🌍 " + review.destination
+                );
+
+                const stars = createElement(
+                    "span",
+                    "review-stars",
+                    starsFor(review.rating)
+                );
+
+                const rating = createElement(
+                    "span",
+                    "review-rating",
+                    review.rating + " / 5"
+                );
+
+                const ratingLine = document.createElement("div");
+
+                ratingLine.append(stars, rating);
+
+                const author = createElement(
+                    "p",
+                    "review-author",
+                    "👤 " + review.name +
+                    (review.date ? " • " + review.date : "")
+                );
+
+                const comments = createElement(
+                    "p",
+                    "review-text",
+                    review.text
+                );
+
+                card.append(
+                    destination,
+                    ratingLine,
+                    author,
+                    comments
+                );
+
+                reviewList.append(card);
+            });
+        }
+
+
+        // Search without making another database request.
+        searchInput.addEventListener(
+            "input",
+            renderReviews
+        );
+
+
+        // Load database reviews and prepare the logged-in review form.
+        loadReviews();
+        setupReviewForm();
+
+    </script>
+
+</body>
+</html>

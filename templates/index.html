@@ -1,0 +1,1214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>TravelGo | Explore the World</title>
+
+    <link rel="stylesheet" href="/static/css/style.css">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: "Segoe UI", Arial, sans-serif;
+            background: #f5f8fc;
+            color: #14213d;
+            overflow-x: hidden;
+        }
+
+        a {
+            text-decoration: none;
+        }
+
+        /* NAVBAR */
+
+        .navbar {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            padding: 22px 7%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 100;
+            color: white;
+        }
+
+        .logo {
+            font-size: 27px;
+            font-weight: 800;
+            color:orange;
+            letter-spacing: 0.5px;
+        }
+
+        .logo span {
+            color: #ffd166;
+        }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 26px;
+        }
+
+        .nav-links a {
+            color:black;
+            font-size: 14px;
+            font-weight: 600;
+            transition: 0.3s;
+        }
+
+        .nav-links a:hover {
+            color:grey;
+        }
+
+        .nav-links .nav-register {
+            background: #ffd166;
+            color: #14213d;
+            padding: 11px 21px;
+            border-radius: 25px;
+        }
+
+        .nav-links .nav-register:hover {
+            background:green;
+            color: #14213d;
+        }
+
+        /* HERO SECTION */
+
+        .hero {
+            position: relative;
+            min-height: 760px;
+            display: flex;
+            align-items: center;
+            padding: 140px 7% 100px;
+
+            background:
+                linear-gradient(
+                    110deg,
+                    rgba(5, 22, 48, 0.92),
+                    rgba(8, 42, 78, 0.70),
+                    rgba(5, 22, 48, 0.25)
+                ),
+                url("https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&w=2000&q=85");
+
+            background-size: cover;
+            background-position: center;
+            overflow: hidden;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 5;
+            max-width: 780px;
+            color: white;
+        }
+
+        .eyebrow {
+            display: inline-block;
+            padding: 10px 17px;
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            border-radius: 30px;
+            background: rgba(255, 255, 255, 0.12);
+            backdrop-filter: blur(8px);
+            font-size: 13px;
+            font-weight: 700;
+            letter-spacing: 1px;
+            margin-bottom: 25px;
+        }
+
+        .hero h1 {
+            font-size: clamp(43px, 6vw, 76px);
+            line-height: 1.08;
+            font-weight: 850;
+            margin-bottom: 22px;
+        }
+
+        .hero h1 span {
+            color: #ffd166;
+        }
+
+        .hero p {
+            font-size: 18px;
+            line-height: 1.8;
+            max-width: 620px;
+            color: #e8eef8;
+            margin-bottom: 32px;
+        }
+
+        .hero-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-bottom: 38px;
+        }
+
+        .btn {
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            padding: 15px 25px;
+            border-radius: 30px;
+            font-size: 15px;
+            font-weight: 750;
+            transition: 0.3s;
+            border: none;
+            cursor: pointer;
+        }
+
+        .btn-primary {
+            background: #ffd166;
+            color: #14213d;
+            box-shadow: 0 8px 25px rgba(255, 209, 102, 0.2);
+        }
+
+        .btn-primary:hover {
+            background: white;
+            transform: translateY(-4px);
+            box-shadow: 0 12px 28px rgba(0, 0, 0, 0.2);
+        }
+
+        .btn-white {
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.7);
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .btn-white:hover {
+            background: white;
+            color: #14213d;
+            transform: translateY(-4px);
+        }
+
+        /* HERO DETAILS */
+
+        .hero-details {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 30px;
+        }
+
+        .hero-detail {
+            display: flex;
+            align-items: center;
+            gap: 11px;
+        }
+
+        .detail-icon {
+            width: 43px;
+            height: 43px;
+            border-radius: 50%;
+            display: grid;
+            place-items: center;
+            background: rgba(255, 255, 255, 0.15);
+            font-size: 20px;
+        }
+
+        .hero-detail strong {
+            display: block;
+            font-size: 17px;
+        }
+
+        .hero-detail small {
+            display: block;
+            color: #d4deed;
+            margin-top: 3px;
+        }
+
+        /* FLYING AEROPLANE */
+
+        .hero-plane {
+            position: absolute;
+            top: 27%;
+            left: -100px;
+            z-index: 2;
+            font-size: 55px;
+            animation: flyPlane 13s linear infinite;
+            filter: drop-shadow(0 5px 8px rgba(0, 0, 0, 0.2));
+            pointer-events: none;
+        }
+
+        @keyframes flyPlane {
+            0% {
+                left: -100px;
+                top: 27%;
+                transform: rotate(-5deg);
+            }
+
+            45% {
+                top: 17%;
+                transform: rotate(-2deg);
+            }
+
+            100% {
+                left: calc(100% + 100px);
+                top: 23%;
+                transform: rotate(-5deg);
+            }
+        }
+
+        .cloud {
+            position: absolute;
+            font-size: 52px;
+            opacity: 0.25;
+            animation: cloudMove 28s linear infinite;
+            pointer-events: none;
+        }
+
+        .cloud-one {
+            top: 35%;
+            left: -100px;
+            animation-delay: -5s;
+        }
+
+        .cloud-two {
+            top: 57%;
+            left: -150px;
+            font-size: 40px;
+            animation-delay: -16s;
+        }
+
+        @keyframes cloudMove {
+            from {
+                transform: translateX(0);
+            }
+
+            to {
+                transform: translateX(calc(100vw + 300px));
+            }
+        }
+
+        /* SEARCH SECTION */
+
+        .search-wrapper {
+            position: relative;
+            z-index: 10;
+            margin: -55px auto 0;
+            width: 86%;
+            max-width: 1250px;
+        }
+
+        .search-panel {
+            background: white;
+            border-radius: 22px;
+            padding: 30px;
+            box-shadow: 0 18px 55px rgba(16, 42, 82, 0.15);
+        }
+
+        .search-heading {
+            margin-bottom: 22px;
+        }
+
+        .search-heading h2 {
+            font-size: 24px;
+            margin-bottom: 7px;
+        }
+
+        .search-heading p {
+            color: #718096;
+            font-size: 14px;
+        }
+
+        .search-grid {
+            display: grid;
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+            gap: 16px;
+            align-items: end;
+        }
+
+        .field label {
+            display: block;
+            font-size: 13px;
+            font-weight: 750;
+            margin-bottom: 9px;
+            color: #34445d;
+        }
+
+        .field input,
+        .field select {
+            width: 100%;
+            padding: 14px;
+            border: 1px solid #dce4ef;
+            border-radius: 12px;
+            background: #f9fbfe;
+            color: #14213d;
+            font-size: 14px;
+            outline: none;
+        }
+
+        .field input:focus,
+        .field select:focus {
+            border-color: #2878e3;
+            box-shadow: 0 0 0 3px rgba(40, 120, 227, 0.1);
+        }
+
+        .search-grid .btn {
+            width: 100%;
+            min-height: 48px;
+        }
+
+        /* GENERAL SECTIONS */
+
+        .section {
+            padding: 90px 7%;
+        }
+
+        .section-light {
+            background: #ffffff;
+        }
+
+        .section-heading {
+            text-align: center;
+            max-width: 700px;
+            margin: 0 auto 45px;
+        }
+
+        .section-tag {
+            color: #2474d2;
+            font-size: 13px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 13px;
+        }
+
+        .section-heading h2 {
+            font-size: clamp(30px, 4vw, 43px);
+            margin-bottom: 14px;
+            color: #14213d;
+        }
+
+        .section-heading p {
+            color: #68778d;
+            line-height: 1.8;
+            font-size: 16px;
+        }
+
+        /* CATEGORY CARDS */
+
+        .category-grid {
+            display: grid;
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+            gap: 22px;
+        }
+
+        .category-card {
+            position: relative;
+            min-height: 300px;
+            overflow: hidden;
+            border-radius: 20px;
+            background: #dce8f4;
+            box-shadow: 0 8px 25px rgba(20, 33, 61, 0.08);
+            transition: 0.35s;
+        }
+
+        .category-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 18px 35px rgba(20, 33, 61, 0.18);
+        }
+
+        .category-card img {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            inset: 0;
+            transition: transform 0.5s;
+        }
+
+        .category-card:hover img {
+            transform: scale(1.08);
+        }
+
+        .category-card::after {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(
+                to top,
+                rgba(5, 20, 42, 0.95),
+                rgba(5, 20, 42, 0.04) 80%
+            );
+        }
+
+        .category-card-content {
+            position: absolute;
+            z-index: 2;
+            bottom: 0;
+            left: 0;
+            padding: 24px;
+            color: white;
+        }
+
+        .category-card-content span {
+            font-size: 28px;
+        }
+
+        .category-card-content h3 {
+            font-size: 21px;
+            margin: 8px 0;
+        }
+
+        .category-card-content p {
+            font-size: 13px;
+            line-height: 1.6;
+            color: #e5edf8;
+        }
+
+        /* DESTINATIONS */
+
+        .destination-grid {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 24px;
+        }
+
+        .destination-card {
+            overflow: hidden;
+            border-radius: 18px;
+            background: white;
+            box-shadow: 0 8px 28px rgba(20, 33, 61, 0.08);
+            transition: 0.3s;
+        }
+
+        .destination-card:hover {
+            transform: translateY(-7px);
+            box-shadow: 0 16px 35px rgba(20, 33, 61, 0.14);
+        }
+
+        .destination-card img {
+            width: 100%;
+            height: 220px;
+            object-fit: cover;
+        }
+
+        .destination-card-content {
+            padding: 23px;
+        }
+
+        .destination-card h3 {
+            margin-bottom: 9px;
+            font-size: 21px;
+        }
+
+        .destination-card p {
+            color: #718096;
+            font-size: 14px;
+            line-height: 1.7;
+        }
+
+        .destination-card a {
+            display: inline-block;
+            margin-top: 17px;
+            color: #2474d2;
+            font-weight: 750;
+        }
+
+        .destination-card a:hover {
+            color: #14213d;
+        }
+
+        .section-action {
+            text-align: center;
+            margin-top: 38px;
+        }
+
+        /* WHY TRAVELGO */
+
+        .features {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 25px;
+        }
+
+        .feature-card {
+            padding: 30px;
+            border: 1px solid #e7edf5;
+            background: white;
+            border-radius: 18px;
+            transition: 0.3s;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+            border-color: #bdd8fa;
+        }
+
+        .feature-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 17px;
+            background: #eaf3ff;
+            display: grid;
+            place-items: center;
+            font-size: 29px;
+            margin-bottom: 20px;
+        }
+
+        .feature-card h3 {
+            font-size: 20px;
+            margin-bottom: 12px;
+        }
+
+        .feature-card p {
+            color: #718096;
+            font-size: 14px;
+            line-height: 1.8;
+        }
+
+        /* CTA */
+
+        .cta {
+            margin: 20px 7% 80px;
+            padding: 65px 30px;
+            text-align: center;
+            color: white;
+            border-radius: 25px;
+            background: linear-gradient(120deg, #0b2545, #1768ac, #2589c9);
+        }
+
+        .cta h2 {
+            font-size: clamp(30px, 4vw, 43px);
+            margin-bottom: 15px;
+        }
+
+        .cta p {
+            color: #e1edfa;
+            line-height: 1.8;
+            margin: 0 auto 25px;
+            max-width: 650px;
+        }
+
+        /* FOOTER */
+
+        .footer {
+            padding: 45px 7%;
+            background: #08172e;
+            color: white;
+        }
+
+        .footer-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 25px;
+            flex-wrap: wrap;
+        }
+
+        .footer p {
+            color: #b8c5d8;
+            font-size: 14px;
+            line-height: 1.8;
+        }
+
+        .footer-links {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .footer-links a {
+            color: #dce7f5;
+            font-size: 14px;
+        }
+
+        .footer-links a:hover {
+            color: #ffd166;
+        }
+
+        /* RESPONSIVE DESIGN */
+
+        @media (max-width: 1000px) {
+            .search-grid {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+
+            .category-grid {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+
+            .destination-grid {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+        }
+
+        @media (max-width: 700px) {
+            .navbar {
+                padding: 18px 5%;
+                align-items: flex-start;
+                gap: 15px;
+            }
+
+            .logo {
+                font-size: 23px;
+            }
+
+            .nav-links {
+                gap: 12px;
+                flex-wrap: wrap;
+                justify-content: flex-end;
+            }
+
+            .nav-links a {
+                font-size: 12px;
+            }
+
+            .nav-links .nav-register {
+                padding: 8px 12px;
+            }
+
+            .hero {
+                min-height: 720px;
+                padding: 150px 6% 100px;
+                background-position: center;
+            }
+
+            .hero h1 {
+                font-size: 44px;
+            }
+
+            .hero p {
+                font-size: 15px;
+            }
+
+            .hero-plane {
+                font-size: 40px;
+            }
+
+            .hero-details {
+                gap: 18px;
+            }
+
+            .search-wrapper {
+                width: 92%;
+                margin-top: -35px;
+            }
+
+            .search-panel {
+                padding: 22px;
+            }
+
+            .search-grid,
+            .category-grid,
+            .destination-grid,
+            .features {
+                grid-template-columns: 1fr;
+            }
+
+            .section {
+                padding: 65px 6%;
+            }
+
+            .category-card {
+                min-height: 270px;
+            }
+
+            .destination-card img {
+                height: 220px;
+            }
+
+            .cta {
+                margin: 10px 5% 55px;
+                padding: 45px 22px;
+            }
+
+            .footer-content {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            html {
+                scroll-behavior: auto;
+            }
+
+            .hero-plane,
+            .cloud {
+                animation: none;
+            }
+
+            *,
+            *::before,
+            *::after {
+                transition-duration: 0.01ms !important;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+   <!-- NAVIGATION -->
+<!-- NAVIGATION -->
+<nav class="navbar">
+    <a href="/" class="logo">✈ Travel<span>Go</span></a>
+
+    <div class="nav-links">
+        <a href="/">Home</a>
+        <a href="/destinations.html">Destinations</a>
+        <a href="/about.html">About</a>
+
+        <!-- Visible before login -->
+        <a href="/login.html" id="loginLink">Login</a>
+
+        <a href="/register.html"
+           id="registerLink"
+           class="nav-register">
+            Get Started ↗
+        </a>
+
+        <!-- Visible after login -->
+        <a href="/dashboard.html" id="dashboardLink" hidden>
+            Dashboard
+        </a>
+
+        <a href="#" id="logoutLink" hidden>
+            Logout
+        </a>
+    </div>
+</nav>
+    <!-- HERO -->
+    <header class="hero">
+
+        <div class="hero-plane" aria-hidden="true">✈️</div>
+        <div class="cloud cloud-one" aria-hidden="true">☁️</div>
+        <div class="cloud cloud-two" aria-hidden="true">☁️</div>
+
+        <div class="hero-content">
+
+            <div class="eyebrow">
+                🌍 YOUR NEXT ADVENTURE STARTS HERE
+            </div>
+
+            <h1>
+                Explore the World.<br>
+                <span>Live the Journey.</span>
+            </h1>
+
+            <p>
+                Discover breathtaking destinations, experience new cultures,
+                and create unforgettable memories. Your next great adventure
+                is just one booking away.
+            </p>
+
+            <div class="hero-buttons">
+                <a href="destinations.html" class="btn btn-primary">
+                    Explore Destinations &nbsp; →
+                </a>
+
+                <a href="register.html" class="btn btn-white">
+                    Start Your Journey ✈
+                </a>
+            </div>
+
+            <div class="hero-details">
+
+                <div class="hero-detail">
+                    <div class="detail-icon">🌎</div>
+                    <div>
+                        <strong>Discover</strong>
+                        <small>Amazing places</small>
+                    </div>
+                </div>
+
+                <div class="hero-detail">
+                    <div class="detail-icon">🎒</div>
+                    <div>
+                        <strong>Experience</strong>
+                        <small>New adventures</small>
+                    </div>
+                </div>
+
+                <div class="hero-detail">
+                    <div class="detail-icon">📸</div>
+                    <div>
+                        <strong>Remember</strong>
+                        <small>Beautiful moments</small>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </header>
+
+    <!-- SEARCH -->
+    <div class="search-wrapper">
+        <div class="search-panel">
+
+            <div class="search-heading">
+                <h2>🔎 Find Your Perfect Trip</h2>
+                <p>Choose your destination and start planning your next adventure.</p>
+            </div>
+
+            <form id="destinationSearchForm" action="destinations.html" method="GET">
+                <div class="search-grid">
+
+                    <div class="field">
+                        <label for="destinationSearch">Where to?</label>
+                        <input
+                            type="text"
+                            id="destinationSearch"
+                            name="search"
+                            placeholder="Enter a destination"
+                        >
+                    </div>
+
+                    <div class="field">
+                        <label for="destinationCategory">Travel style</label>
+                        <select id="destinationCategory" name="category">
+                            <option value="">All experiences</option>
+                            <option value="Hill Station">Hill Stations</option>
+                            <option value="Beach">Beaches</option>
+                            <option value="Heritage">Heritage</option>
+                            <option value="Wildlife">Wildlife</option>
+                            <option value="Adventure">Adventure</option>
+                        </select>
+                    </div>
+
+                    <div class="field">
+                        <label for="homeTravelDate">Travel date</label>
+                        <input
+                            type="date"
+                            id="homeTravelDate"
+                            name="date"
+                        >
+                    </div>
+
+                    <div class="field">
+                        <label for="homeTravellers">Travellers</label>
+                        <select id="homeTravellers" name="travellers">
+                            <option value="1">1 Traveller</option>
+                            <option value="2" selected>2 Travellers</option>
+                            <option value="3">3 Travellers</option>
+                            <option value="4">4 Travellers</option>
+                            <option value="5">5 Travellers</option>
+                            <option value="6">6+ Travellers</option>
+                        </select>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary">
+                        Search Trips →
+                    </button>
+
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- TRAVEL CATEGORIES -->
+    <section class="section">
+        <div class="section-heading">
+            <div class="section-tag">Find Your Escape</div>
+            <h2>Travel Your Way</h2>
+            <p>
+                Whether you love mountains, beaches, history, or adventure,
+                find an experience that matches your travel dreams.
+            </p>
+        </div>
+
+        <div class="category-grid">
+
+            <a href="destinations.html?category=Hill%20Station"
+               class="category-card">
+
+                <img
+                    src="https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&w=800&q=80"
+                    alt="Beautiful mountain landscape"
+                    loading="lazy"
+                >
+
+                <div class="category-card-content">
+                    <span>🏔️</span>
+                    <h3>Hill Escapes</h3>
+                    <p>Find peace among mountains and misty valleys.</p>
+                </div>
+            </a>
+
+            <a href="destinations.html?category=Beach"
+               class="category-card">
+
+                <img
+                    src="/static/images/beach.jpg"
+                    alt="Beautiful beach destination"
+                    loading="lazy"
+                >
+
+                <div class="category-card-content">
+                    <span>🏖️</span>
+                    <h3>Beach Holidays</h3>
+                    <p>Enjoy golden sands, blue waters, and sunsets.</p>
+                </div>
+            </a>
+
+            <a href="destinations.html?category=Heritage"
+               class="category-card">
+
+                <img
+                    src="https://images.unsplash.com/photo-1519681393784-d120267933ba?auto=format&fit=crop&w=800&q=80"
+                    alt="Historic architecture and cultural travel"
+                    loading="lazy"
+                >
+
+                <div class="category-card-content">
+                    <span>🏛️</span>
+                    <h3>Heritage Trails</h3>
+                    <p>Explore history, architecture, and traditions.</p>
+                </div>
+            </a>
+
+            <a href="destinations.html?category=Adventure"
+               class="category-card">
+
+                <img
+                    src="/static/images/adventure.jpeg"
+                    alt="Outdoor adventure travel"
+                    loading="lazy"
+                >
+
+                <div class="category-card-content">
+                    <span>🧗</span>
+                    <h3>Adventure Trips</h3>
+                    <p>Discover exciting experiences and outdoor fun.</p>
+                </div>
+            </a>
+
+        </div>
+    </section>
+
+    <!-- POPULAR DESTINATIONS -->
+    <section class="section section-light">
+
+        <div class="section-heading">
+            <div class="section-tag">Explore Somewhere New</div>
+            <h2>Popular Destinations 🌍</h2>
+            <p>
+                Get inspired by incredible places and start planning
+                your next memorable trip.
+            </p>
+        </div>
+
+        <!-- app.js can populate this container -->
+        <div class="destination-grid" id="destinationGrid">
+            <article class="destination-card">
+                <img
+                    src="https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=800&q=80"
+                    alt="Scenic travel destination"
+                    loading="lazy"
+                >
+
+                <div class="destination-card-content">
+                    <h3>Nature Getaways</h3>
+                    <p>Reconnect with nature and enjoy breathtaking scenery.</p>
+                    <a href="destinations.html">Explore trips →</a>
+                </div>
+            </article>
+
+            <article class="destination-card">
+                <img
+                    src="/static/images/beach.jpg"
+                    alt="Tropical beach getaway"
+                    loading="lazy"
+                >
+
+                <div class="destination-card-content">
+                    <h3>Coastal Adventures</h3>
+                    <p>Relax by the sea and discover beautiful coastlines.</p>
+                    <a href="destinations.html?category=Beach">Explore trips →</a>
+                </div>
+            </article>
+
+            <article class="destination-card">
+                <img
+                    src="/static/images/adventure.jpeg"
+                    alt="Outdoor adventure"
+                    loading="lazy"
+                >
+
+                <div class="destination-card-content">
+                    <h3>Adventure Holidays</h3>
+                    <p>Make your trip memorable with exciting new experiences.</p>
+                    <a href="destinations.html?category=Adventure">Explore trips →</a>
+                </div>
+            </article>
+        </div>
+
+        <div class="section-action">
+            <a href="destinations.html" class="btn btn-primary">
+                View All Destinations →
+            </a>
+        </div>
+            <div class="travelgo-background-animation" aria-hidden="true">
+                <span class="travelgo-float travelgo-plane-one">✈️</span>
+                <span class="travelgo-float travelgo-plane-two">🛫</span>
+                <span class="travelgo-float travelgo-cloud-one">☁️</span>
+                <span class="travelgo-float travelgo-cloud-two">☁️</span>
+                <span class="travelgo-float travelgo-globe">🌎</span>
+                <span class="travelgo-float travelgo-luggage">🧳</span>
+            </div>
+
+    </section>
+
+    <!-- WHY TRAVELGO -->
+    <section class="section section-popular">
+
+        <div class="section-heading">
+            <div class="section-tag">The TravelGo Difference</div>
+            <h2>Why Travel With Us?</h2>
+            <p>
+                Make travel planning simple, convenient, and exciting
+                from the first click to the final destination.
+            </p>
+        </div>
+
+        <div class="features">
+
+            <div class="feature-card">
+                <div class="feature-icon">🧭</div>
+                <h3>Discover New Places</h3>
+                <p>
+                    Explore different destinations and find experiences
+                    that suit your travel interests.
+                </p>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon">📅</div>
+                <h3>Easy Trip Planning</h3>
+                <p>
+                    Choose your destination, plan your travel date,
+                    and organize your next journey.
+                </p>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon">🎫</div>
+                <h3>Manage Your Bookings</h3>
+                <p>
+                    Keep your travel plans organized and access your
+                    bookings through your TravelGo account.
+                </p>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- CALL TO ACTION -->
+    <section class="cta">
+
+        <h2>Your Next Adventure Awaits ✈️</h2>
+
+        <p>
+            The world is full of amazing places waiting to be discovered.
+            Start planning your next journey with TravelGo today.
+        </p>
+
+        <a href="destinations.html" class="btn btn-primary">
+            Explore the World →
+        </a>
+
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="footer">
+
+        <div class="footer-content">
+
+            <div>
+                <a href="index.html" class="logo">✈ Travel<span>Go</span></a>
+                <p style="margin-top: 12px;">
+                    Explore the world. Create beautiful memories.
+                </p>
+                <p style="margin-top: 8px;">
+                    © 2026 TravelGo. All rights reserved.
+                </p>
+            </div>
+
+            <div class="footer-links">
+                <a href="index.html">Home</a>
+                <a href="destinations.html">Destinations</a>
+                <a href="about.html">About Us</a>
+                <a href="review.html">Reviews</a>
+                <a href="login.html">Login</a>
+            </div>
+
+        </div>
+    </footer>
+
+    <!-- EXISTING JAVASCRIPT -->
+    <script src="js/app.js" defer></script>
+
+    <!-- PREVENT PAST TRAVEL DATES -->
+   
+   <script>
+document.addEventListener("DOMContentLoaded", function () {
+
+    const loginLink = document.getElementById("loginLink");
+    const registerLink = document.getElementById("registerLink");
+    const dashboardLink = document.getElementById("dashboardLink");
+    const logoutLink = document.getElementById("logoutLink");
+
+    async function updateNavbar() {
+        try {
+            const response = await fetch("/api/me", {
+                method: "GET",
+                credentials: "same-origin",
+                cache: "no-store"
+            });
+
+            const data = await response.json();
+            const loggedIn = response.ok && data.success === true;
+
+            if (loginLink) loginLink.hidden = loggedIn;
+            if (registerLink) registerLink.hidden = loggedIn;
+            if (dashboardLink) dashboardLink.hidden = !loggedIn;
+            if (logoutLink) logoutLink.hidden = !loggedIn;
+
+        } catch (error) {
+            console.error("Navbar status error:", error);
+        }
+    }
+
+    if (logoutLink) {
+        logoutLink.addEventListener("click", async function (event) {
+            event.preventDefault();
+
+            try {
+                const response = await fetch("/api/logout", {
+                    method: "POST",
+                    credentials: "same-origin"
+                });
+
+                const data = await response.json();
+
+                if (response.ok && data.success === true) {
+                    window.location.replace("/");
+                } else {
+                    alert("Logout failed. Please try again.");
+                }
+
+            } catch (error) {
+                console.error("Logout error:", error);
+                alert("Unable to log out. Please try again.");
+            }
+        });
+    }
+
+    updateNavbar();
+
+});
+</script>
+
+</body>
+</html>

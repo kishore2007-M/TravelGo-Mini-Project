@@ -1,0 +1,733 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Destination Details | TravelGo</title>
+
+    <link rel="stylesheet" href="/static/css/style.css">
+
+    <style>
+        .detail-container {
+            max-width: 1150px;
+            margin: 35px auto;
+            padding: 20px;
+        }
+
+        .back-link {
+            display: inline-block;
+            margin-bottom: 20px;
+            color: #176b87;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        .destination-banner {
+            position: relative;
+            height: 400px;
+            overflow: hidden;
+            border-radius: 20px;
+            background: #0b2545;
+            color: white;
+        }
+
+        .destination-banner img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .banner-content {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            padding: 35px;
+            background: linear-gradient(
+                transparent,
+                rgba(0, 0, 0, 0.85)
+            );
+        }
+
+        .banner-content h1 {
+            font-size: 42px;
+            margin: 10px 0;
+        }
+
+        .detail-layout {
+            display: grid;
+            grid-template-columns: minmax(0, 1fr) 310px;
+            gap: 25px;
+            margin-top: 25px;
+        }
+
+        .detail-card,
+        .booking-card {
+            background: white;
+            padding: 25px;
+            border-radius: 16px;
+            box-shadow: 0 5px 25px rgba(0, 0, 0, 0.08);
+            margin-bottom: 22px;
+        }
+
+        .detail-card h2,
+        .booking-card h2 {
+            color: #0b2545;
+        }
+
+        .description {
+            line-height: 1.8;
+            color: #536273;
+        }
+
+        .highlight-list {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 12px;
+        }
+
+        .highlight {
+            padding: 15px;
+            border-radius: 10px;
+            background: #eef7fb;
+        }
+
+        .price {
+            color: #087f5b;
+            font-size: 30px;
+            font-weight: bold;
+            margin: 12px 0;
+        }
+
+        .primary-button {
+            display: block;
+            width: 100%;
+            box-sizing: border-box;
+            padding: 14px;
+            border: none;
+            border-radius: 9px;
+            background: #0b2545;
+            color: white;
+            font-size: 16px;
+            font-weight: bold;
+            text-align: center;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .primary-button:hover {
+            background: #176b87;
+        }
+
+        .rating-summary {
+            padding: 18px;
+            background: #eef7fb;
+            border-radius: 12px;
+            margin-bottom: 20px;
+        }
+
+        .average-rating {
+            font-size: 35px;
+            font-weight: bold;
+            color: #0b2545;
+        }
+
+        .stars {
+            color: #f4b400;
+            font-size: 23px;
+            letter-spacing: 3px;
+        }
+
+        .star-selector {
+            display: flex;
+            flex-direction: row-reverse;
+            justify-content: flex-end;
+            width: fit-content;
+            margin: 10px 0 20px;
+        }
+
+        .star-selector input {
+            position: absolute;
+            opacity: 0;
+        }
+
+        .star-selector label {
+            color: #d0d6dd;
+            font-size: 35px;
+            cursor: pointer;
+        }
+
+        .star-selector label:hover,
+        .star-selector label:hover ~ label,
+        .star-selector input:checked ~ label {
+            color: #f4b400;
+        }
+
+        .feedback-form label {
+            display: block;
+            margin: 14px 0 7px;
+            font-weight: bold;
+        }
+
+        .feedback-form input,
+        .feedback-form textarea {
+            width: 100%;
+            box-sizing: border-box;
+            padding: 12px;
+            border: 1px solid #d6dee7;
+            border-radius: 8px;
+            font: inherit;
+        }
+
+        .feedback-form textarea {
+            min-height: 110px;
+            resize: vertical;
+        }
+
+        .review {
+            padding: 18px 0;
+            border-bottom: 1px solid #e7edf2;
+        }
+
+        .review:last-child {
+            border-bottom: none;
+        }
+
+        .review-name {
+            color: #0b2545;
+            font-weight: bold;
+        }
+
+        .review-date {
+            color: #7c8795;
+            font-size: 13px;
+        }
+
+        .feedback-message {
+            color: #087f5b;
+            line-height: 1.5;
+        }
+
+        @media (max-width: 750px) {
+            .detail-layout {
+                grid-template-columns: 1fr;
+            }
+
+            .destination-banner {
+                height: 300px;
+            }
+
+            .banner-content h1 {
+                font-size: 32px;
+            }
+
+            .highlight-list {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<header class="navbar">
+    <div class="container nav-container">
+
+        <a href="home.html" class="logo">✈️ TravelGo</a>
+
+        <nav class="nav-links">
+            <a href="home.html">Home</a>
+            <a href="destinations.html">Destinations</a>
+            <a href="my_bookings.html">My Bookings</a>
+            <a href="about.html">About</a>
+            <a href="login.html">Login</a>
+        </nav>
+
+    </div>
+</header>
+
+<main class="detail-container">
+
+    <a href="destinations.html" class="back-link">
+        ← Back to Destinations
+    </a>
+
+    <section class="destination-banner">
+
+        <img id="destinationImage"
+             src="../static/images/ooty.jpg"
+             alt="Destination">
+
+        <div class="banner-content">
+
+            <span id="destinationCategory">Hill Station</span>
+
+            <h1 id="destinationName">Ooty</h1>
+
+            <p id="destinationLocation">📍 Tamil Nadu, India</p>
+
+            <div>
+                <span id="bannerStars" class="stars">☆☆☆☆☆</span>
+                <span id="bannerRating">0.0</span>
+                <span id="bannerReviewCount">(0 reviews)</span>
+            </div>
+
+        </div>
+
+    </section>
+
+    <div class="detail-layout">
+
+        <div>
+
+            <section class="detail-card">
+                <h2>🌍 About This Destination</h2>
+
+                <p id="destinationDescription" class="description">
+                    Discover beautiful landscapes and unforgettable
+                    travel experiences.
+                </p>
+            </section>
+
+            <section class="detail-card">
+                <h2>✨ Highlights & Activities</h2>
+
+                <div id="destinationHighlights" class="highlight-list">
+                    <div class="highlight">🏞️ Scenic viewpoints</div>
+                    <div class="highlight">📸 Photography</div>
+                    <div class="highlight">🍽️ Local cuisine</div>
+                    <div class="highlight">🛍️ Local shopping</div>
+                </div>
+            </section>
+
+            <section class="detail-card">
+                <h2>⭐ Traveller Ratings</h2>
+
+                <div class="rating-summary">
+                    <div id="averageRating" class="average-rating">0.0</div>
+                    <div id="averageStars" class="stars">☆☆☆☆☆</div>
+                    <p id="ratingCount">No reviews yet.</p>
+                </div>
+
+                <h3>Share Your Feedback 💬</h3>
+
+                <form id="feedbackForm" class="feedback-form">
+
+                    <label for="reviewerName">Your Name</label>
+
+                    <input
+                        type="text"
+                        id="reviewerName"
+                        maxlength="60"
+                        placeholder="Enter your name"
+                        required>
+
+                    <label>Select Your Rating</label>
+
+                    <div class="star-selector">
+
+                        <input type="radio" id="rating5"
+                               name="rating" value="5" required>
+                        <label for="rating5">★</label>
+
+                        <input type="radio" id="rating4"
+                               name="rating" value="4">
+                        <label for="rating4">★</label>
+
+                        <input type="radio" id="rating3"
+                               name="rating" value="3">
+                        <label for="rating3">★</label>
+
+                        <input type="radio" id="rating2"
+                               name="rating" value="2">
+                        <label for="rating2">★</label>
+
+                        <input type="radio" id="rating1"
+                               name="rating" value="1">
+                        <label for="rating1">★</label>
+
+                    </div>
+
+                    <label for="reviewText">Your Feedback</label>
+
+                    <textarea
+                        id="reviewText"
+                        maxlength="1000"
+                        placeholder="Tell us about your experience..."
+                        required></textarea>
+
+                    <button type="submit" class="primary-button">
+                        Submit Feedback ⭐
+                    </button>
+
+                    <p id="feedbackMessage"
+                       class="feedback-message"
+                       role="status"></p>
+
+                </form>
+            </section>
+
+            <section class="detail-card">
+                <h2>💬 Customer Reviews</h2>
+
+                <div id="reviewsList">
+                    <p>Loading reviews...</p>
+                </div>
+            </section>
+
+        </div>
+         <div class="travelgo-background-animation" aria-hidden="true">
+                <span class="travelgo-float travelgo-plane-one">✈️</span>
+                <span class="travelgo-float travelgo-plane-two">🛫</span>
+                <span class="travelgo-float travelgo-cloud-one">☁️</span>
+                <span class="travelgo-float travelgo-cloud-two">☁️</span>
+                <span class="travelgo-float travelgo-globe">🌎</span>
+                <span class="travelgo-float travelgo-luggage">🧳</span>
+            </div>
+
+        <aside class="booking-card">
+
+            <h2>Plan Your Trip ✈️</h2>
+
+            <p>Package price starts from</p>
+
+            <div class="price" id="destinationPrice">
+                ₹4,999
+            </div>
+
+            <p>
+                🕒 Duration:
+                <strong id="destinationDuration">3 Days / 2 Nights</strong>
+            </p>
+
+            <p>
+                ⭐ Rating:
+                <strong id="bookingRating">0.0 / 5</strong>
+            </p>
+
+            <button type="button"
+                    id="bookButton"
+                    class="primary-button">
+                Book This Trip
+            </button>
+
+            <p class="description">
+                Prices are illustrative for this frontend demo.
+            </p>
+
+        </aside>
+
+    </div>
+
+</main>
+
+<footer class="footer">
+    <div class="container">
+        <p>© 2026 TravelGo | Explore the World ✈️</p>
+    </div>
+</footer>
+
+<script>
+(function () {
+    "use strict";
+
+    const REVIEWS_KEY = "tg_destination_reviews";
+    const SELECTED_KEY = "tg_selected_destination";
+
+    const defaultDestination = {
+        name: "Ooty",
+        image: "ooty.jpg",
+        price: 4999,
+        duration: "3 Days / 2 Nights",
+        category: "Hill Station",
+        location: "Tamil Nadu, India",
+        description:
+            "Explore Ooty's beautiful green hills, peaceful lakes, " +
+            "tea gardens and scenic viewpoints. Enjoy a relaxing " +
+            "holiday surrounded by nature.",
+        highlights: [
+            "🏞️ Scenic viewpoints",
+            "🌿 Beautiful tea gardens",
+            "🚂 Nilgiri Mountain Railway",
+            "📸 Photography spots"
+        ]
+    };
+
+    function readStorage(key, fallback) {
+        try {
+            const stored = localStorage.getItem(key);
+            return stored ? JSON.parse(stored) : fallback;
+        } catch (error) {
+            return fallback;
+        }
+    }
+
+    function escapeHTML(value) {
+        return String(value).replace(/[&<>"']/g, function (char) {
+            return {
+                "&": "&amp;",
+                "<": "&lt;",
+                ">": "&gt;",
+                '"': "&quot;",
+                "'": "&#39;"
+            }[char];
+        });
+    }
+function getDestination() {
+    const selected = readStorage("tg_selected_destination", null);
+
+    if (selected && typeof selected === "object" && selected.name) {
+        return { ...defaultDestination, ...selected };
+    }
+
+    window.location.href = "destinations.html";
+    return defaultDestination;
+}
+
+    let destination = getDestination();
+    function destinationId() {
+    const selectedId = Number(destination.id);
+
+    if (Number.isInteger(selectedId) && selectedId > 0) {
+        return selectedId;
+    }
+
+    return null;
+}
+    
+
+    function getAllReviews() {
+        const result = readStorage(REVIEWS_KEY, {});
+
+        if (!result || Array.isArray(result) ||
+            typeof result !== "object") {
+            return {};
+        }
+
+        return result;
+    }
+
+    function getReviews() {
+        const all = getAllReviews();
+        const reviews = all[destinationId()];
+
+        return Array.isArray(reviews) ? reviews : [];
+    }
+
+    function starsFor(rating) {
+        const count = Math.max(
+            0,
+            Math.min(5, Math.round(Number(rating) || 0))
+        );
+
+        return "★".repeat(count) + "☆".repeat(5 - count);
+    }
+
+    function updateRatings() {
+        const reviews = getReviews();
+
+        const average = reviews.length
+            ? reviews.reduce(function (total, review) {
+                return total + Number(review.rating);
+            }, 0) / reviews.length
+            : 0;
+
+        document.getElementById("averageRating").textContent =
+            average.toFixed(1);
+
+        document.getElementById("averageStars").textContent =
+            starsFor(average);
+
+        document.getElementById("ratingCount").textContent =
+            reviews.length === 0
+                ? "Be the first to review this destination!"
+                : reviews.length + (
+                    reviews.length === 1 ? " review" : " reviews"
+                );
+
+        document.getElementById("bannerStars").textContent =
+            starsFor(average);
+
+        document.getElementById("bannerRating").textContent =
+            average.toFixed(1);
+
+        document.getElementById("bannerReviewCount").textContent =
+            "(" + reviews.length + " reviews)";
+
+        document.getElementById("bookingRating").textContent =
+            average.toFixed(1) + " / 5";
+    }
+
+    function renderReviews() {
+        const list = document.getElementById("reviewsList");
+        const reviews = getReviews();
+
+        if (reviews.length === 0) {
+            list.innerHTML =
+                "<p>No reviews yet. Be the first to share feedback!</p>";
+
+            updateRatings();
+            return;
+        }
+
+        list.innerHTML = reviews.slice().reverse().map(function (review) {
+            return `
+                <article class="review">
+                    <div class="review-name">
+                        👤 ${escapeHTML(review.name)}
+                    </div>
+
+                    <div class="stars">
+                        ${starsFor(review.rating)}
+                    </div>
+
+                    <p class="description">
+                        ${escapeHTML(review.text)}
+                    </p>
+
+                    <div class="review-date">
+                        ${escapeHTML(review.date)}
+                    </div>
+                </article>
+            `;
+        }).join("");
+
+        updateRatings();
+    }
+
+    function showDestination() {
+        document.title = destination.name + " | TravelGo";
+
+        document.getElementById("destinationName").textContent =
+            destination.name;
+
+        document.getElementById("destinationLocation").textContent =
+            "📍 " + (destination.location || defaultDestination.location);
+
+        document.getElementById("destinationCategory").textContent =
+            destination.category || defaultDestination.category;
+
+        document.getElementById("destinationDescription").textContent =
+            destination.description || defaultDestination.description;
+
+        document.getElementById("destinationDuration").textContent =
+            destination.duration || defaultDestination.duration;
+
+        const price = Number(destination.price || defaultDestination.price);
+
+        document.getElementById("destinationPrice").textContent =
+            "₹" + price.toLocaleString("en-IN");
+
+        const image = document.getElementById("destinationImage");
+
+        image.src = "../static/images/" +
+            (destination.image || defaultDestination.image);
+
+        image.alt = destination.name;
+
+        image.onerror = function () {
+            this.onerror = null;
+            this.src = "../static/images/ooty.jpg";
+        };
+
+        const highlights = Array.isArray(destination.highlights)
+            ? destination.highlights
+            : defaultDestination.highlights;
+
+        document.getElementById("destinationHighlights").innerHTML =
+            highlights.map(function (item) {
+                return '<div class="highlight">' +
+                    escapeHTML(item) + '</div>';
+            }).join("");
+
+        renderReviews();
+    }
+    document.getElementById("feedbackForm").addEventListener(
+    "submit",
+    async function (event) {
+        event.preventDefault();
+
+        const name = document.getElementById("reviewerName")
+            .value.trim();
+
+        const text = document.getElementById("reviewText")
+            .value.trim();
+
+        const rating = document.querySelector(
+            'input[name="rating"]:checked'
+        );
+
+        const message = document.getElementById("feedbackMessage");
+
+        if (!name || !text || !rating) {
+            message.textContent =
+                "Please enter your name, rating, and feedback.";
+            return;
+        }
+
+        message.textContent = "Saving your review...";
+
+        try {
+            const response = await fetch("/api/reviews", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Accept": "application/json"
+                },
+                body: JSON.stringify({
+                    destination_id:(destinationId()),
+                    rating: Number(rating.value),
+                    comment: text,
+                    review:text
+                })
+            });
+
+            const result = await response.json();
+
+            if (!response.ok || result.success !== true) {
+                throw new Error(
+                    result.message || "Unable to save your review."
+                );
+            }
+
+            this.reset();
+
+            message.textContent =
+                "Thank you! Your feedback has been saved to the database.";
+
+            // Reload reviews from the backend.
+            if (typeof loadReviews === "function") {
+                await loadReviews();
+            }
+
+        } catch (error) {
+            console.error("Review submission failed:", error);
+
+            message.textContent =
+                error.message ||
+                "Could not save feedback. Please try again.";
+        }
+    }
+);
+    
+    document.getElementById("bookButton").addEventListener(
+        "click",
+        function () {
+            localStorage.setItem(
+                SELECTED_KEY,
+                JSON.stringify(destination)
+            );
+
+            window.location.href = "booking.html";
+        }
+    );
+
+    showDestination();
+
+})();
+</script>
+
+</body>
+</html>

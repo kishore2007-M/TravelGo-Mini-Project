@@ -1,0 +1,1825 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TravelGo | Secure Payment</title>
+
+    <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            font-family: Arial, sans-serif;
+            color: white;
+            background: #07152e;
+            overflow-x: hidden;
+        }
+
+        .animated-background {
+            position: fixed;
+            inset: 0;
+            z-index: 0;
+            overflow: hidden;
+            pointer-events: none;
+            background:
+                radial-gradient(circle at 15% 20%, rgba(0,191,255,.35), transparent 40%),
+                radial-gradient(circle at 85% 80%, rgba(124,92,255,.35), transparent 40%),
+                linear-gradient(135deg, #07152e, #10294c, #07152e);
+        }
+
+        .glow {
+            position: absolute;
+            width: 280px;
+            height: 280px;
+            border-radius: 50%;
+            filter: blur(80px);
+            opacity: .6;
+            animation: glowMove 9s ease-in-out infinite alternate;
+        }
+
+        .glow-one {
+            top: 5%;
+            left: -100px;
+            background: #00c6ff;
+        }
+
+        .glow-two {
+            right: -100px;
+            bottom: 5%;
+            background: #8055ff;
+            animation-delay: -4s;
+        }
+
+        .floating-icon {
+            position: absolute;
+            font-size: 32px;
+            opacity: .55;
+            animation: floatTravel 6s ease-in-out infinite;
+        }
+
+        .icon-one {
+            top: 18%;
+            left: 7%;
+            animation: planeMove 15s linear infinite;
+        }
+
+        .icon-two {
+            top: 55%;
+            left: 12%;
+        }
+
+        .icon-three {
+            top: 28%;
+            right: 9%;
+        }
+
+        .icon-four {
+            bottom: 15%;
+            right: 18%;
+        }
+
+        .cloud {
+            position: absolute;
+            font-size: 50px;
+            opacity: .22;
+            animation: cloudMove 35s linear infinite;
+        }
+
+        .cloud-one {
+            top: 35%;
+            left: -100px;
+        }
+
+        .cloud-two {
+            top: 75%;
+            left: -150px;
+            animation-delay: -18s;
+        }
+
+        @keyframes glowMove {
+            from { transform: translate(0, 0); }
+            to { transform: translate(100px, -50px); }
+        }
+
+        @keyframes floatTravel {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-25px) rotate(10deg); }
+        }
+
+        @keyframes planeMove {
+            0% { transform: translateX(-50px) translateY(0); }
+            50% { transform: translateX(250px) translateY(-35px); }
+            100% { transform: translateX(550px) translateY(0); }
+        }
+
+        @keyframes cloudMove {
+            from { transform: translateX(0); }
+            to { transform: translateX(calc(100vw + 250px)); }
+        }
+
+        .navbar {
+            position: relative;
+            z-index: 2;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 16px;
+            padding: 17px 7%;
+            background: rgba(255,255,255,.96);
+            color: #10213c;
+            box-shadow: 0 4px 20px rgba(0,0,0,.15);
+        }
+
+        .logo {
+            margin: 0;
+            font-size: 25px;
+        }
+
+        .logo span {
+            color: #0077b6;
+        }
+
+        .nav-links {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 22px;
+        }
+
+        .nav-links a {
+            color: #334a68;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        .nav-links a:hover {
+            color: #0077b6;
+        }
+
+        .page-container {
+            position: relative;
+            z-index: 1;
+            width: min(1050px, 92%);
+            margin: 35px auto;
+            padding-bottom: 40px;
+        }
+
+        .heading {
+            margin-bottom: 28px;
+            text-align: center;
+        }
+
+        .heading h1 {
+            margin: 0 0 12px;
+            font-size: clamp(28px, 4vw, 38px);
+        }
+
+        .heading p,
+        .description {
+            color: #d5e6ff;
+            line-height: 1.7;
+        }
+
+        .summary {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 14px;
+            padding: 20px;
+            margin-bottom: 25px;
+            background: rgba(255,255,255,.09);
+            border: 1px solid rgba(255,255,255,.17);
+            border-radius: 16px;
+            backdrop-filter: blur(10px);
+        }
+
+        .summary-item {
+            padding: 10px;
+            text-align: center;
+            overflow-wrap: anywhere;
+        }
+
+        .summary-item small {
+            display: block;
+            margin-bottom: 9px;
+            color: #c9d9f0;
+        }
+
+        .summary-item strong {
+            font-size: 18px;
+        }
+
+        .card {
+            padding: 25px;
+            margin-bottom: 24px;
+            border-radius: 18px;
+            border: 1px solid rgba(255,255,255,.18);
+            background: rgba(255,255,255,.09);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 8px 28px rgba(0,0,0,.15);
+        }
+
+        .card h2 {
+            margin-top: 0;
+            font-size: 23px;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 18px;
+        }
+
+        .form-group {
+            margin-bottom: 8px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #eef6ff;
+            font-weight: bold;
+        }
+
+        input {
+            width: 100%;
+            min-height: 46px;
+            padding: 12px;
+            border-radius: 9px;
+            border: 1px solid #b7c9df;
+            background: white;
+            color: #14253c;
+            font-size: 16px;
+        }
+
+        input:focus {
+            outline: 3px solid rgba(0,198,255,.25);
+            border-color: #00c6ff;
+        }
+
+        .hint {
+            color: #c9d9f0;
+            font-size: 13px;
+            line-height: 1.6;
+        }
+
+        .primary-button,
+        .secondary-button,
+        .upi-button {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            min-height: 48px;
+            padding: 13px 20px;
+            border: none;
+            border-radius: 9px;
+            font-size: 15px;
+            font-weight: bold;
+            text-decoration: none;
+            text-align: center;
+            cursor: pointer;
+            transition: transform .2s, opacity .2s;
+        }
+
+        .primary-button {
+            background: linear-gradient(135deg, #00c6ff, #66e4ff);
+            color: #06203b;
+        }
+
+        .secondary-button {
+            background: rgba(255,255,255,.1);
+            color: white;
+            border: 1px solid rgba(255,255,255,.25);
+        }
+
+        .primary-button:hover:not(:disabled),
+        .secondary-button:hover:not(:disabled),
+        .upi-button:hover:not(:disabled) {
+            transform: translateY(-2px);
+        }
+
+        button:disabled {
+            cursor: not-allowed;
+            opacity: .45;
+            transform: none;
+        }
+
+        .button-row {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 14px;
+            margin-top: 22px;
+        }
+
+        .otp-row {
+            display: grid;
+            grid-template-columns: repeat(6, minmax(0, 1fr));
+            gap: 9px;
+            margin: 18px 0;
+        }
+
+        .otp-input {
+            min-width: 0;
+            min-height: 54px;
+            text-align: center;
+            font-size: 23px;
+            font-weight: bold;
+        }
+
+        .status {
+            margin-top: 15px;
+            line-height: 1.6;
+            overflow-wrap: anywhere;
+        }
+
+        .success-text {
+            color: #8bffc3;
+        }
+
+        .error-text {
+            color: #ffb5b5;
+        }
+
+        .notice {
+            margin-top: 18px;
+            padding: 13px;
+            border-radius: 9px;
+            background:green;
+            border: 1px solid rgba(255,190,50,.4);
+            color: white;
+            font-size: 13px;
+            line-height: 1.7;
+        }
+
+        .qr-container {
+            display: flex;
+            justify-content: center;
+            margin: 22px 0;
+        }
+
+        .qr-image {
+            display: block;
+            width: min(100%, 280px);
+            aspect-ratio: 1 / 1;
+            object-fit: contain;
+            padding: 10px;
+            border-radius: 15px;
+            background: white;
+            border: 1px solid #d9e2ef;
+        }
+
+        .qr-caption {
+            text-align: center;
+            color: #d5e6ff;
+            font-size: 13px;
+            line-height: 1.7;
+        }
+
+        .upi-buttons {
+            display: grid;
+            gap: 13px;
+            margin-top: 22px;
+        }
+
+        .upi-button {
+            width: 100%;
+            min-height: 54px;
+        }
+
+        .gpay {
+            background: white;
+            color: #174ea6;
+        }
+
+        .phonepe {
+            background: #6739b7;
+            color: white;
+        }
+
+        .paytm {
+            background: #00baf2;
+            color: #06283d;
+        }
+
+        .other-upi {
+            background: #e6f5ff;
+            color: #15395b;
+        }
+
+        .locked {
+            opacity: .55;
+        }
+
+        footer {
+            position: relative;
+            z-index: 1;
+            padding: 20px;
+            text-align: center;
+            color: #c9d9f0;
+        }
+
+        [hidden] {
+            display: none !important;
+        }
+
+        @media (max-width: 720px) {
+            .form-grid,
+            .summary {
+                grid-template-columns: 1fr;
+            }
+
+            .navbar {
+                justify-content: center;
+                text-align: center;
+            }
+
+            .nav-links {
+                justify-content: center;
+            }
+
+            .card {
+                padding: 20px;
+            }
+
+            .otp-row {
+                gap: 5px;
+            }
+
+            .otp-input {
+                padding: 5px;
+                font-size: 20px;
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            *,
+            *::before,
+            *::after {
+                animation-duration: .01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: .01ms !important;
+            }
+        }
+        /* Modern Payment Cards */
+.payment-methods {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 12px !important;
+    margin-top: 20px !important;
+}
+
+.payment-option {
+    display: flex !important;
+    align-items: center !important;
+    gap: 14px !important;
+    width: 100% !important;
+    min-height: 75px !important;
+    box-sizing: border-box !important;
+    padding: 15px 18px !important;
+    border: 1px solid rgba(255,255,255,0.25) !important;
+    border-radius: 14px !important;
+    background: rgba(255,255,255,0.07) !important;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.payment-option input[type="radio"] {
+    position: static !important;
+    display: block !important;
+    width: 20px !important;
+    height: 20px !important;
+    flex: 0 0 20px !important;
+    margin: 0 !important;
+    accent-color: #38d9ff;
+}
+
+.payment-icon {
+    font-size: 28px !important;
+    flex-shrink: 0;
+}
+
+.payment-info {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 5px !important;
+    flex: 1;
+}
+
+.payment-info strong {
+    display: block !important;
+    font-size: 16px !important;
+    color: white;
+}
+
+.payment-info small {
+    display: block !important;
+    font-size: 12px !important;
+    color: #d5e5ff;
+}
+
+.payment-check {
+    display: none !important;
+    color: #56e6ff;
+    font-size: 22px;
+    font-weight: bold;
+}
+
+.payment-option:has(input:checked) {
+    background: rgba(56,217,255,0.16) !important;
+    border: 2px solid #38d9ff !important;
+    box-shadow: 0 0 15px rgba(56,217,255,0.15);
+}
+
+.payment-option:has(input:checked) .payment-check {
+    display: block !important;
+}
+    </style>
+</head>
+
+<body>
+
+    <div class="animated-background" aria-hidden="true">
+        <div class="glow glow-one"></div>
+        <div class="glow glow-two"></div>
+
+        <span class="floating-icon icon-one">✈️</span>
+        <span class="floating-icon icon-two">🌍</span>
+        <span class="floating-icon icon-three">🧳</span>
+        <span class="floating-icon icon-four">☁️</span>
+
+        <span class="cloud cloud-one">☁️</span>
+        <span class="cloud cloud-two">☁️</span>
+    </div>
+
+    <header class="navbar">
+        <h2 class="logo">✈️ Travel<span>Go</span></h2>
+
+        <nav class="nav-links">
+            <a href="home.html">Home</a>
+            <a href="destinations.html">Destinations</a>
+            <a href="my_bookings.html">My Bookings</a>
+        </nav>
+    </header>
+
+    <main class="page-container">
+
+        <section class="heading">
+            <h1>💳 Complete Your Payment</h1>
+            <p>Verify your email and review your booking before continuing.</p>
+        </section>
+
+        <section class="summary">
+            <div class="summary-item">
+                <small>📍 Destination</small>
+                <strong id="destinationName">Loading...</strong>
+            </div>
+
+            <div class="summary-item">
+                <small>📅 Travel Date</small>
+                <strong id="travelDate">Not selected</strong>
+            </div>
+
+            <div class="summary-item">
+                <small>💰 Total Amount</small>
+                <strong id="totalAmount">₹0</strong>
+            </div>
+        </section>
+
+        <section class="card">
+            <h2>👤 Contact Details</h2>
+
+            <p class="description">
+                Enter your email address to receive a one-time verification code.
+            </p>
+
+            <form id="contactForm">
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="email">Email Address</label>
+                        <input
+                            type="email"
+                            id="email"
+                            autocomplete="email"
+                            placeholder="you@example.com"
+                            required
+                        >
+                    </div>
+
+                    <div class="form-group">
+                        <label for="mobile">Mobile Number</label>
+                        <input
+                            type="tel"
+                            id="mobile"
+                            autocomplete="tel"
+                            inputmode="tel"
+                            placeholder="Enter mobile number"
+                            minlength="10"
+                            maxlength="16"
+                            required
+                        >
+                    </div>
+                </div>
+
+                <p class="hint">
+                    The OTP will be sent to your email, not by SMS.
+                </p>
+
+                <div class="button-row">
+                    <button type="submit" class="primary-button" id="sendOtpButton">
+                        📧 Send Email OTP
+                    </button>
+                </div>
+            </form>
+
+            <p id="emailStatus" class="status" role="status" aria-live="polite"></p>
+        </section>
+
+        <section class="card" id="otpSection" hidden>
+            <h2>🔐 Verify Your Email</h2>
+
+            <p class="description">
+                Enter the six-digit verification code sent to your email.
+            </p>
+
+            <form id="otpForm">
+                <div class="otp-row">
+                    <input class="otp-input" inputmode="numeric" maxlength="1" aria-label="OTP digit 1" required>
+                    <input class="otp-input" inputmode="numeric" maxlength="1" aria-label="OTP digit 2" required>
+                    <input class="otp-input" inputmode="numeric" maxlength="1" aria-label="OTP digit 3" required>
+                    <input class="otp-input" inputmode="numeric" maxlength="1" aria-label="OTP digit 4" required>
+                    <input class="otp-input" inputmode="numeric" maxlength="1" aria-label="OTP digit 5" required>
+                    <input class="otp-input" inputmode="numeric" maxlength="1" aria-label="OTP digit 6" required>
+                </div>
+
+                <p id="otpTimer" class="hint">OTP expires in 05:00</p>
+
+                <div class="button-row">
+                    <button type="submit" class="primary-button" id="verifyOtpButton">
+                        ✅ Verify OTP
+                    </button>
+
+                    <button type="button" class="secondary-button" id="resendOtpButton" disabled>
+                        Resend OTP
+                    </button>
+                </div>
+            </form>
+
+            <p id="otpStatus" class="status" role="status" aria-live="polite"></p>
+        </section>
+       <section class="card" id="paymentSection">
+
+    <h2>💳 Choose Your Payment Method</h2>
+
+    <p class="description">
+        Select your preferred payment method.
+    </p>
+
+    <!-- Payment options -->
+    <div class="payment-methods">
+
+        <label class="payment-option">
+            <input type="radio"
+                   name="paymentMethod"
+                   value="UPI"
+                   checked>
+            <span>📱 UPI</span>
+        </label>
+
+        <label class="payment-option">
+            <input type="radio"
+                   name="paymentMethod"
+                   value="Credit Card">
+            <span>💳 Credit Card</span>
+        </label>
+
+        <label class="payment-option">
+            <input type="radio"
+                   name="paymentMethod"
+                   value="Debit Card">
+            <span>💳 Debit Card</span>
+        </label>
+
+    </div>
+
+    <!-- UPI QR Section -->
+    <div id="upiPaymentSection">
+
+        <h3>Scan & Pay using UPI</h3>
+
+        <div class="qr-container">
+            <img
+                src="../static/images/your_qr_code.jpeg"
+                alt="UPI Payment QR Code"
+                class="qr-image">
+        </div>
+
+        <p class="qr-caption">
+            Scan the QR code using your UPI application.
+        </p>
+
+    </div>
+
+    <!-- Card Payment Section -->
+    <div id="cardPaymentSection" hidden>
+
+        <h3 id="cardFormTitle">Credit Card Details</h3>
+
+        <form id="cardPaymentForm">
+
+            <label for="cardholderName">
+                Cardholder Name
+            </label>
+
+            <input
+                type="text"
+                id="cardholderName"
+                placeholder="Enter cardholder name"
+                autocomplete="cc-name"
+                required>
+
+            <label for="cardNumber">
+                Card Number
+            </label>
+
+            <input
+                type="text"
+                id="cardNumber"
+                placeholder="Enter card number"
+                inputmode="numeric"
+                autocomplete="cc-number"
+                maxlength="23"
+                required>
+
+            <div class="card-row">
+
+                <div>
+                    <label for="expiryDate">
+                        Expiry Date
+                    </label>
+
+                    <input
+                        type="text"
+                        id="expiryDate"
+                        placeholder="MM/YY"
+                        autocomplete="cc-exp"
+                        maxlength="5"
+                        required>
+                </div>
+
+                <div>
+                    <label for="cvv">
+                        CVV
+                    </label>
+
+                    <input
+                        type="password"
+                        id="cvv"
+                        placeholder="CVV"
+                        inputmode="numeric"
+                        autocomplete="cc-csc"
+                        maxlength="4"
+                        required>
+                </div>
+
+            </div>
+
+            <button type="submit" id="cardPayButton">
+                Pay Now
+            </button>
+
+        </form>
+
+        <p id="cardPaymentMessage"
+           role="status"
+           aria-live="polite"></p>
+
+    </div>
+
+</section>
+        
+        <section class="card">
+            <h2>🧾 Confirm Your Booking</h2>
+
+            <p class="description">
+                After the email verification step, you can save your booking,
+                traveller details and demo payment record to the database.
+            </p>
+
+            <div class="button-row">
+                <a href="travellers.html" class="secondary-button">
+                    ← Back to Traveller Details
+                </a>
+
+                <button
+                    type="button"
+                    class="primary-button"
+                    id="continueButton"
+                    disabled>
+                    Save Booking & Continue →
+                </button>
+            </div>
+
+            <p id="paymentMessage" class="status" role="status" aria-live="polite"></p>
+        </section>
+
+    </main>
+
+    <footer>
+        © 2026 TravelGo | Your journey, your memories ✈️
+    </footer>
+
+    <script>
+        "use strict";
+
+        const EMAILJS_PUBLIC_KEY = "3FYgNJ90V-rV0PE1K";
+        const EMAILJS_SERVICE_ID = "service_upvg6zt";
+        const EMAILJS_TEMPLATE_ID = "template_6a3j988";
+
+        const OTP_LIFETIME_MS = 1 * 60 * 1000;
+        const RESEND_COOLDOWN_MS = 60 * 1000;
+        const MAX_ATTEMPTS = 3;
+
+        let currentOtp = "";
+        let otpExpiresAt = 0;
+        let resendAvailableAt = 0;
+        let attempts = 0;
+        let verifiedEmail = "";
+        let verifiedMobile = "";
+        let timerInterval = null;
+        let resendInterval = null;
+        let sendingOtp = false;
+        let savingBooking = false;
+
+        const emailInput = document.getElementById("email");
+        const mobileInput = document.getElementById("mobile");
+        const otpSection = document.getElementById("otpSection");
+        const otpInputs = Array.from(document.querySelectorAll(".otp-input"));
+
+        const sendOtpButton = document.getElementById("sendOtpButton");
+        const verifyOtpButton = document.getElementById("verifyOtpButton");
+        const resendOtpButton = document.getElementById("resendOtpButton");
+        const continueButton = document.getElementById("continueButton");
+
+        const emailStatus = document.getElementById("emailStatus");
+        const otpStatus = document.getElementById("otpStatus");
+        const otpTimer = document.getElementById("otpTimer");
+        const paymentMessage = document.getElementById("paymentMessage");
+
+        function readObject(key) {
+            try {
+                const value = JSON.parse(localStorage.getItem(key) || "{}");
+                return value && typeof value === "object" ? value : {};
+            } catch (error) {
+                console.error("Storage read error:", error);
+                return {};
+            }
+        }
+
+        function showStatus(element, message, success = false) {
+            element.textContent = message;
+            element.className = "status " +
+                (success ? "success-text" : "error-text");
+        }
+
+        function clearStatus(element) {
+            element.textContent = "";
+            element.className = "status";
+        }
+
+        function collectObjects(...roots) {
+            const queue = roots.filter(
+                value => value && typeof value === "object"
+            );
+
+            const result = [];
+            const visited = new Set();
+
+            while (queue.length && result.length < 60) {
+                const item = queue.shift();
+
+                if (!item || typeof item !== "object" || visited.has(item)) {
+                    continue;
+                }
+
+                visited.add(item);
+                result.push(item);
+
+                Object.values(item).forEach(value => {
+                    if (value && typeof value === "object") {
+                        queue.push(value);
+                    }
+                });
+            }
+
+            return result;
+        }
+
+        function readField(objects, keys) {
+            for (const object of objects) {
+                for (const key of keys) {
+                    const value = object[key];
+
+                    if (
+                        value !== undefined &&
+                        value !== null &&
+                        typeof value !== "object" &&
+                        String(value).trim() !== ""
+                    ) {
+                        return value;
+                    }
+                }
+            }
+
+            return "";
+        }
+
+        function formatDate(value) {
+            if (!value) return "Not selected";
+
+            const match = /^(\d{4})-(\d{2})-(\d{2})$/.exec(String(value));
+
+            let date;
+
+            if (match) {
+                date = new Date(
+                    Number(match[1]),
+                    Number(match[2]) - 1,
+                    Number(match[3])
+                );
+            } else {
+                date = new Date(value);
+            }
+
+            return Number.isNaN(date.getTime())
+                ? String(value)
+                : date.toLocaleDateString("en-IN", {
+                    day: "2-digit",
+                    month: "short",
+                    year: "numeric"
+                });
+        }
+
+        function displayBooking() {
+            const booking = readObject("tg_booking_details");
+            const destination = readObject("tg_selected_destination");
+            const traveller = readObject("tg_traveller_details");
+            const user = readObject("tg_logged_in_user");
+            const userDetails = readObject("tg_user_details");
+            const userId = Number(user.id || userDetails.id)
+
+            const objects = collectObjects(
+                booking,
+                traveller,
+                user,
+                userDetails
+            );
+
+            const destinationObjects = collectObjects(destination, booking);
+
+            const destinationName = readField(destinationObjects, [
+                "destinationName",
+                "destination_name",
+                "destination",
+                "name",
+                "title"
+            ]) || "Selected Destination";
+
+            const travelDate = readField(objects, [
+                "travelDate",
+                "travel_date",
+                "date"
+            ]);
+
+            const countValue =
+                booking.numberOfTravellers ||
+                booking.traveller_count ||
+                booking.persons ||
+                traveller.numberOfTravellers ||
+                traveller.traveller_count;
+
+            const count = Number(countValue) > 0
+                ? Number(countValue)
+                : Array.isArray(traveller.travellers)
+                    ? traveller.travellers.length
+                    : 1;
+
+            let amount = Number(
+                booking.totalAmount ??
+                booking.total_amount ??
+                booking.total ??
+                booking.amount
+            );
+
+            if (!Number.isFinite(amount) || amount < 0) {
+                const price = Number(
+                    readField(destinationObjects, ["price", "amount"])
+                );
+
+                amount = Number.isFinite(price) && price >= 0
+                    ? price * count
+                    : 0;
+            }
+
+            const email =
+                readField(objects, [
+                    "contactEmail",
+                    "contact_email",
+                    "email",
+                    "user_email"
+                ]) || localStorage.getItem("tg_user_email") || "";
+
+            const mobile = readField(objects, [
+                "contactMobile",
+                "contact_mobile",
+                "mobile",
+                "phone"
+            ]);
+
+            document.getElementById("destinationName").textContent =
+                destinationName;
+
+            document.getElementById("travelDate").textContent =
+                formatDate(travelDate);
+
+            document.getElementById("totalAmount").textContent =
+                new Intl.NumberFormat("en-IN", {
+                    style: "currency",
+                    currency: "INR",
+                    maximumFractionDigits: 2
+                }).format(amount);
+
+            if (email) emailInput.value = String(email);
+            if (mobile) mobileInput.value = String(mobile);
+        }
+
+        function clearOtpTimers() {
+            if (timerInterval) clearInterval(timerInterval);
+            if (resendInterval) clearInterval(resendInterval);
+
+            timerInterval = null;
+            resendInterval = null;
+        }
+
+        function updateOtpTimer() {
+            const remaining = Math.max(0, otpExpiresAt - Date.now());
+            const minutes = Math.floor(remaining / 60000);
+            const seconds = Math.floor((remaining % 60000) / 1000);
+
+            otpTimer.textContent =
+                "OTP expires in " +
+                String(minutes).padStart(2, "0") + ":" +
+                String(seconds).padStart(2, "0");
+
+            if (remaining <= 0) {
+                currentOtp = "";
+
+                if (timerInterval) clearInterval(timerInterval);
+                timerInterval = null;
+
+                otpTimer.textContent = "OTP expired. Request a new OTP.";
+                verifyOtpButton.disabled = true;
+
+                showStatus(otpStatus, "Your OTP has expired.");
+            }
+        }
+
+        function updateResendButton() {
+            const remaining = Math.max(0, resendAvailableAt - Date.now());
+
+            if (remaining <= 0) {
+                resendOtpButton.disabled = false;
+                resendOtpButton.textContent = "Resend OTP";
+
+                if (resendInterval) clearInterval(resendInterval);
+                resendInterval = null;
+                return;
+            }
+
+            resendOtpButton.disabled = true;
+            resendOtpButton.textContent =
+                "Resend in " + Math.ceil(remaining / 1000) + "s";
+        }
+
+        function startOtpTimers() {
+            clearOtpTimers();
+
+            timerInterval = setInterval(updateOtpTimer, 1000);
+            resendInterval = setInterval(updateResendButton, 1000);
+
+            updateOtpTimer();
+            updateResendButton();
+        }
+
+        function setPaymentLinksEnabled(enabled) {
+            document.querySelectorAll(".upi-button").forEach(button => {
+                button.classList.toggle("locked", !enabled);
+
+                if (button.tagName === "A") {
+                    button.setAttribute(
+                        "aria-disabled",
+                        enabled ? "false" : "true"
+                    );
+
+                    if (enabled) {
+                        button.removeAttribute("tabindex");
+                    } else {
+                        button.setAttribute("tabindex", "-1");
+                    }
+                } else {
+                    button.disabled = !enabled;
+                }
+            });
+        }
+
+        function resetVerification() {
+            verifiedEmail = "";
+            verifiedMobile = "";
+            currentOtp = "";
+            attempts = 0;
+
+            continueButton.disabled = true;
+            setPaymentLinksEnabled(false);
+
+            clearStatus(paymentMessage);
+            clearStatus(otpStatus);
+        }
+
+        function randomOtp() {
+            const values = new Uint32Array(1);
+            crypto.getRandomValues(values);
+            return String(100000 + (values[0] % 900000));
+        }
+
+        async function sendOtp() {
+            if (sendingOtp) return;
+
+            const email = emailInput.value.trim();
+            const mobile = mobileInput.value.trim();
+            const digits = mobile.replace(/\D/g, "");
+
+            if (!emailInput.checkValidity()) {
+                emailInput.reportValidity();
+                return;
+            }
+
+            if (digits.length < 10 || digits.length > 15) {
+                showStatus(
+                    emailStatus,
+                    "Enter a valid mobile number containing 10–15 digits."
+                );
+                return;
+            }
+
+            if (Date.now() < resendAvailableAt) {
+                showStatus(
+                    emailStatus,
+                    "Please wait before requesting another OTP."
+                );
+                return;
+            }
+
+            if (typeof emailjs === "undefined") {
+                showStatus(
+                    emailStatus,
+                    "EmailJS did not load. Check your internet connection."
+                );
+                return;
+            }
+
+            sendingOtp = true;
+            sendOtpButton.disabled = true;
+
+            showStatus(emailStatus, "Sending OTP to your email...");
+
+            const newOtp = randomOtp();
+
+            try {
+                const result = await emailjs.send(
+                    EMAILJS_SERVICE_ID,
+                    EMAILJS_TEMPLATE_ID,
+                    {
+                        to_email: email,
+                        passcode: newOtp,
+                        time: "1 minutes",
+                        name: "TravelGo customer"
+                    }
+                );
+
+                if (!result || result.status !== 200) {
+                    throw new Error("Email delivery failed.");
+                }
+
+                currentOtp = newOtp;
+                otpExpiresAt = Date.now() + OTP_LIFETIME_MS;
+                resendAvailableAt = Date.now() + RESEND_COOLDOWN_MS;
+                attempts = 0;
+
+                verifiedEmail = "";
+                verifiedMobile = "";
+
+                otpInputs.forEach(input => input.value = "");
+
+                otpSection.hidden = false;
+                verifyOtpButton.disabled = false;
+
+                clearStatus(otpStatus);
+
+                showStatus(
+                    emailStatus,
+                    "OTP email sent. Check your Inbox and Spam folders.",
+                    true
+                );
+
+                startOtpTimers();
+                otpInputs[0].focus();
+
+            } catch (error) {
+                console.error("EmailJS OTP error:", error);
+
+                showStatus(
+                    emailStatus,
+                    "Could not send OTP: " +
+                    (error.text || error.message || "Unknown error")
+                );
+
+            } finally {
+                sendingOtp = false;
+                sendOtpButton.disabled = false;
+            }
+        }
+
+        document.getElementById("contactForm").addEventListener(
+            "submit",
+            function(event) {
+                event.preventDefault();
+                sendOtp();
+            }
+        );
+
+        otpInputs.forEach((input, index) => {
+            input.addEventListener("input", function() {
+                input.value = input.value.replace(/\D/g, "").slice(-1);
+
+                if (input.value && index < otpInputs.length - 1) {
+                    otpInputs[index + 1].focus();
+                }
+            });
+
+            input.addEventListener("keydown", function(event) {
+                if (
+                    event.key === "Backspace" &&
+                    !input.value &&
+                    index > 0
+                ) {
+                    otpInputs[index - 1].focus();
+                }
+            });
+
+            input.addEventListener("paste", function(event) {
+                const pasted = event.clipboardData
+                    .getData("text")
+                    .replace(/\D/g, "")
+                    .slice(0, 6);
+
+                if (pasted.length) {
+                    event.preventDefault();
+
+                    otpInputs.forEach((box, i) => {
+                        box.value = pasted[i] || "";
+                    });
+
+                    otpInputs[Math.min(pasted.length, 5)].focus();
+                }
+            });
+        });
+
+        document.getElementById("otpForm").addEventListener(
+            "submit",
+            function(event) {
+                event.preventDefault();
+
+                if (!currentOtp || Date.now() >= otpExpiresAt) {
+                    showStatus(
+                        otpStatus,
+                        "OTP expired. Request a new OTP."
+                    );
+                    return;
+                }
+
+                if (attempts >= MAX_ATTEMPTS) {
+                    currentOtp = "";
+                    verifyOtpButton.disabled = true;
+
+                    showStatus(
+                        otpStatus,
+                        "Too many attempts. Request another OTP when available."
+                    );
+                    return;
+                }
+
+                const enteredOtp = otpInputs
+                    .map(input => input.value)
+                    .join("");
+
+                if (!/^\d{6}$/.test(enteredOtp)) {
+                    showStatus(
+                        otpStatus,
+                        "Enter all six digits of the OTP."
+                    );
+                    return;
+                }
+
+                attempts++;
+
+                if (enteredOtp !== currentOtp) {
+                    const remaining = MAX_ATTEMPTS - attempts;
+
+                    showStatus(
+                        otpStatus,
+                        "Incorrect OTP. Attempts remaining: " + remaining
+                    );
+
+                    if (remaining <= 0) {
+                        currentOtp = "";
+                        verifyOtpButton.disabled = true;
+                    }
+
+                    return;
+                }
+
+                verifiedEmail = emailInput.value.trim();
+                verifiedMobile = mobileInput.value.trim();
+                currentOtp = "";
+
+                clearOtpTimers();
+
+                otpTimer.textContent = "Email successfully verified.";
+                verifyOtpButton.disabled = true;
+                resendOtpButton.disabled = true;
+
+                emailInput.readOnly = true;
+                mobileInput.readOnly = true;
+
+                setPaymentLinksEnabled(true);
+                continueButton.disabled = false;
+
+                showStatus(
+                    otpStatus,
+                    "Email verified successfully!",
+                    true
+                );
+
+                showStatus(
+                    paymentMessage,
+                    "Email verified. You can now save your booking.",
+                    true
+                );
+            }
+        );
+
+        resendOtpButton.addEventListener("click", function() {
+            if (Date.now() >= resendAvailableAt) {
+                sendOtp();
+            }
+        });
+
+        const openUpiButton = document.getElementById("openUpi");
+
+if (openUpiButton) {
+    openUpiButton.addEventListener("click", function() {
+        document.getElementById("upiMessage").textContent =
+            "Open your UPI application and follow its instructions. This website does not verify the transaction.";
+    });
+}
+
+        // =========================================
+        // SAVE BOOKING, TRAVELLERS AND DEMO PAYMENT
+        // =========================================
+
+        continueButton.addEventListener("click", async function() {
+            if (savingBooking) return;
+
+            if (
+                !verifiedEmail ||
+                verifiedEmail !== emailInput.value.trim() ||
+                verifiedMobile !== mobileInput.value.trim()
+            ) {
+                showStatus(
+                    paymentMessage,
+                    "Verify your email before continuing."
+                );
+                return;
+            }
+
+            const booking = readObject("tg_booking_details");
+            const travellerData = readObject("tg_traveller_details");
+            const destination = readObject("tg_selected_destination");
+
+            const user = readObject("tg_logged_in_user");
+            const userDetails = readObject("tg_user_details");
+
+            const userId = Number(user.id || userDetails.id);
+
+            const destinationId = Number(
+                booking.destination_id ||
+                booking.destinationId ||
+                destination.id ||
+                destination.destination_id
+            );
+
+            const travelDate =
+                booking.travelDate ||
+                booking.travel_date ||
+                booking.date ||
+                travellerData.travelDate ||
+                travellerData.travel_date ||
+                "";
+
+            const travellerList =
+                Array.isArray(travellerData.travellers)
+                    ? travellerData.travellers
+                    : Array.isArray(booking.travellers)
+                        ? booking.travellers
+                        : [];
+
+            const persons = Number(
+                booking.persons ||
+                booking.numberOfTravellers ||
+                booking.traveller_count ||
+                travellerData.numberOfTravellers ||
+                travellerData.traveller_count ||
+                travellerList.length
+            );
+
+           const travellers = travellerList.map(function(person) {
+    let gender = String(person.gender || "Other").trim();
+    const normalizedGender = gender.toLowerCase();
+
+    if (normalizedGender === "male") {
+        gender = "Male";
+    } else if (normalizedGender === "female") {
+        gender = "Female";
+    } else {
+        gender = "Other";
+    }
+
+    return {
+        name: String(
+            person.name ||
+            person.full_name ||
+            person.fullName ||
+            ""
+        ).trim(),
+
+        age: Number(person.age),
+
+        gender: gender,
+
+        // Preserve the identity proof details.
+        proofType: String(
+            person.proofType ||
+            person.proof_type ||
+            person.idProofType ||
+            person.documentType ||
+            ""
+        ).trim(),
+
+        proofReference: String(
+            person.proofReference ||
+            person.proof_reference ||
+            person.proofReferenceNumber ||
+            person.idProofNumber ||
+            person.documentNumber ||
+            ""
+        ).trim(),
+
+        phone: String(
+            person.phone ||
+            person.mobile ||
+            verifiedMobile
+        ).trim(),
+
+        email: String(
+            person.email ||
+            verifiedEmail
+        ).trim()
+    };
+});
+
+            if (!Number.isInteger(userId) || userId <= 0) {
+                showStatus(
+                    paymentMessage,
+                    "Your login ID was not found. Please log in again."
+                );
+                return;
+            }
+
+            if (
+                !Number.isInteger(destinationId) ||
+                destinationId <= 0
+            ) {
+                showStatus(
+                    paymentMessage,
+                    "Destination ID is missing. Please select your destination again."
+                );
+                return;
+            }
+
+            if (!travelDate || !Number.isInteger(persons) || persons < 1) {
+                showStatus(
+                    paymentMessage,
+                    "Please check your travel date and number of travellers."
+                );
+                return;
+            }
+
+            if (
+                travellers.length !== persons ||
+                travellers.some(person =>
+                    !person.name ||
+                    !Number.isInteger(person.age) ||
+                    person.age < 1 ||
+                    !person.phone ||
+                    !person.email
+                )
+            ) {
+                showStatus(
+                    paymentMessage,
+                    "Traveller details are incomplete. Return to the traveller page and check each traveller's name, age, phone and email."
+                );
+                return;
+            }
+            const selectedPayment = document.querySelector(
+                'input[name="paymentMethod"]:checked'
+            );
+
+            if (!selectedPayment) {
+                showStatus(
+                    paymentMessage,
+                    "Please select a payment method before continuing."
+                );
+                return;
+            }
+
+            
+            savingBooking = true;
+            continueButton.disabled = true;
+
+            showStatus(
+                paymentMessage,
+                "Saving booking and traveller details to MySQL. Please wait...",
+                true
+            );
+
+            try {
+                const response = await fetch("/api/bookings/complete", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({
+                        user_id: userId,
+                        destination_id: destinationId,
+                        travel_date: travelDate,
+                        persons: persons,
+                        total_amount: Number(
+                            booking.totalAmount ||
+                            booking.total_amount ||
+                            booking.totalPrice ||
+                            booking.total_price ||
+                            0
+                        ),
+                        travellers: travellers,
+                        payment_method: document.querySelector(
+    'input[name="paymentMethod"]:checked'
+)?.value || ""
+                    })
+                });
+
+                const result = await response.json();
+
+                if (!response.ok || !result.success) {
+                    throw new Error(
+                        result.message ||
+                        result.error ||
+                        "The server could not save your booking."
+                    );
+                }
+
+                const bookingId =
+                    result.booking_id ||
+                    result.bookingId ||
+                    result.id;
+
+                const destinationName =
+                    booking.destinationName ||
+                    booking.destination_name ||
+                    (typeof booking.destination === "string"
+                        ? booking.destination
+                        : "") ||
+                    destination.name ||
+                    destination.title ||
+                    "Selected Destination";
+
+                const updatedBooking = {
+                    ...booking,
+                    id: bookingId,
+                    booking_id: bookingId,
+                    booking_reference:
+                        result.booking_reference ||
+                        result.bookingReference ||
+                        ("TG-" + String(bookingId || Date.now())),
+                    destination_id: destinationId,
+                    destinationName: destinationName,
+                    travelDate: travelDate,
+                    persons: persons,
+                    numberOfTravellers: persons,
+                    totalAmount: Number(
+                        booking.totalAmount ||
+                        booking.total_amount ||
+                        booking.totalPrice ||
+                        booking.total_price ||
+                        0
+                    ),
+                    travellers: travellers,
+                    contactEmail: verifiedEmail,
+                    contactMobile: verifiedMobile,
+                    emailVerified: true,
+                    payment_status: "Demo",
+                    payment_recorded_at: new Date().toISOString()
+                };
+
+                localStorage.setItem(
+                    "tg_booking_details",
+                    JSON.stringify(updatedBooking)
+                );
+                console.log(
+    "Travellers before saving:",
+    JSON.stringify(travellers, null, 2)
+);
+
+                localStorage.setItem(
+                    "tg_traveller_details",
+                    JSON.stringify({
+                        ...travellerData,
+                        travellers: travellers,
+                        contactEmail: verifiedEmail,
+                        contactMobile: verifiedMobile
+                    })
+                );
+
+                localStorage.setItem(
+                    "tg_user_email",
+                    verifiedEmail
+                );
+
+                showStatus(
+                    paymentMessage,
+                    "Booking saved to MySQL successfully! Opening confirmation...",
+                    true
+                );
+
+                window.location.href = "./payment_success.html";
+
+            } catch (error) {
+                console.error("MySQL booking error:", error);
+
+                showStatus(
+                    paymentMessage,
+                    "Could not save the booking: " + error.message
+                );
+
+                continueButton.disabled = false;
+
+            } finally {
+                savingBooking = false;
+            }
+        });
+
+        emailInput.addEventListener("input", resetVerification);
+        mobileInput.addEventListener("input", resetVerification);
+
+        if (typeof emailjs !== "undefined") {
+    emailjs.init({
+        publicKey: EMAILJS_PUBLIC_KEY
+    });
+    console.log("EmailJS initialized successfully");
+} else {
+    console.error("EmailJS library not loaded");
+}
+      
+
+        displayBooking();
+        resetVerification();
+    // Show QR code only when UPI is selected
+// Payment method selection
+const paymentOptions = document.querySelectorAll(
+    'input[name="paymentMethod"]'
+);
+
+const upiPaymentSection =
+    document.getElementById("upiPaymentSection");
+
+const cardPaymentSection =
+    document.getElementById("cardPaymentSection");
+
+const cardFormTitle =
+    document.getElementById("cardFormTitle");
+
+function togglePaymentSection() {
+
+    const selectedPayment = document.querySelector(
+        'input[name="paymentMethod"]:checked'
+    );
+
+    if (!selectedPayment) return;
+
+    if (selectedPayment.value === "UPI") {
+
+        upiPaymentSection.hidden = false;
+        cardPaymentSection.hidden = true;
+
+    } else {
+
+        upiPaymentSection.hidden = true;
+        cardPaymentSection.hidden = false;
+
+        cardFormTitle.textContent =
+            selectedPayment.value + " Details";
+    }
+}
+
+paymentOptions.forEach(function (option) {
+    option.addEventListener(
+        "change",
+        togglePaymentSection
+    );
+});
+
+togglePaymentSection();
+
+
+// Demo card form validation
+const cardPaymentForm =
+    document.getElementById("cardPaymentForm");
+
+const cardPaymentMessage =
+    document.getElementById("cardPaymentMessage");
+
+cardPaymentForm.addEventListener("submit", function (event) {
+
+    event.preventDefault();
+
+    const cardholderName =
+        document.getElementById("cardholderName").value.trim();
+
+    const cardNumber =
+        document.getElementById("cardNumber").value.replace(/\s/g, "");
+
+    const expiryDate =
+        document.getElementById("expiryDate").value.trim();
+
+    const cvv =
+        document.getElementById("cvv").value.trim();
+
+    if (!cardholderName) {
+        cardPaymentMessage.textContent =
+            "Please enter the cardholder name.";
+        return;
+    }
+
+    if (!/^\d{13,19}$/.test(cardNumber)) {
+        cardPaymentMessage.textContent =
+            "Please enter a valid card number.";
+        return;
+    }
+
+    if (!/^(0[1-9]|1[0-2])\/\d{2}$/.test(expiryDate)) {
+        cardPaymentMessage.textContent =
+            "Enter expiry date in MM/YY format.";
+        return;
+    }
+
+    if (!/^\d{3,4}$/.test(cvv)) {
+        cardPaymentMessage.textContent =
+            "Please enter a valid CVV.";
+        return;
+    }
+
+    cardPaymentMessage.textContent =
+        "Details entered. Connect a payment gateway to verify payment.";
+
+});
+    </script>
+
+</body>
+</html>

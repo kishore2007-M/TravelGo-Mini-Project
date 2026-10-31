@@ -1,0 +1,1230 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Traveller Details | TravelGo</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #00c6ff;
+            --secondary: #7c5cff;
+            --dark: #07152e;
+            --card: rgba(255, 255, 255, 0.09);
+            --border: rgba(255, 255, 255, 0.18);
+        }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            font-family: Arial, sans-serif;
+            color: white;
+            background: var(--dark);
+            overflow-x: hidden;
+        }
+
+        /* Animated background */
+
+        .animated-background {
+            position: fixed;
+            inset: 0;
+            overflow: hidden;
+            pointer-events: none;
+            z-index: 0;
+
+            background:
+                radial-gradient(
+                    circle at 10% 20%,
+                    rgba(0, 191, 255, 0.45),
+                    transparent 38%
+                ),
+                radial-gradient(
+                    circle at 90% 80%,
+                    rgba(124, 92, 255, 0.40),
+                    transparent 40%
+                ),
+                linear-gradient(
+                    135deg,
+                    #07152e,
+                    #10294c,
+                    #07152e
+                );
+        }
+
+        .glow {
+            position: absolute;
+            width: 280px;
+            height: 280px;
+            border-radius: 50%;
+            filter: blur(80px);
+            opacity: 0.55;
+            animation: glowMove 9s ease-in-out infinite alternate;
+        }
+
+        .glow-one {
+            top: 5%;
+            left: -100px;
+            background: #00c6ff;
+        }
+
+        .glow-two {
+            right: -100px;
+            bottom: 5%;
+            background: #7c5cff;
+            animation-delay: -4s;
+        }
+
+        .floating-icon {
+            position: absolute;
+            font-size: 32px;
+            opacity: 0.55;
+            animation: floatTravel 6s ease-in-out infinite;
+        }
+
+        .icon-one {
+            top: 18%;
+            left: 8%;
+        }
+
+        .icon-two {
+            top: 55%;
+            left: 15%;
+            animation-delay: -2s;
+        }
+
+        .icon-three {
+            top: 30%;
+            right: 10%;
+            animation-delay: -3s;
+        }
+
+        .icon-four {
+            bottom: 15%;
+            right: 20%;
+            animation-delay: -1s;
+        }
+
+        @keyframes glowMove {
+            from {
+                transform: translate(0, 0);
+            }
+
+            to {
+                transform: translate(100px, -50px);
+            }
+        }
+
+        @keyframes floatTravel {
+            0%, 100% {
+                transform: translateY(0) rotate(0deg);
+            }
+
+            50% {
+                transform: translateY(-25px) rotate(10deg);
+            }
+        }
+
+        /* Navigation */
+
+        .navbar {
+            position: relative;
+            z-index: 2;
+
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
+
+            padding: 16px 7%;
+
+            background: rgba(255, 255, 255, 0.96);
+            color: #10213c;
+
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.12);
+        }
+
+        .logo {
+            margin: 0;
+            font-size: 25px;
+            font-weight: bold;
+            white-space: nowrap;
+        }
+
+        .logo span {
+            color: #0077b6;
+        }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 24px;
+        }
+
+        .nav-links a {
+            color: #334a68;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        .nav-links a:hover {
+            color: #0077b6;
+        }
+
+        /* Main content */
+
+        .page-content {
+            position: relative;
+            z-index: 1;
+            width: min(900px, 92%);
+            margin: 35px auto;
+            padding-bottom: 40px;
+        }
+
+        .page-heading {
+            margin-bottom: 25px;
+            text-align: center;
+        }
+
+        .page-heading h1 {
+            margin: 0 0 10px;
+            font-size: clamp(27px, 4vw, 38px);
+        }
+
+        .page-heading p {
+            margin: 0;
+            color: #d4e6ff;
+            line-height: 1.6;
+        }
+
+        /* Booking summary */
+
+        .booking-summary {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+            margin-bottom: 25px;
+            padding: 20px;
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            background: var(--card);
+            backdrop-filter: blur(10px);
+        }
+
+        .summary-item {
+            min-width: 0;
+            padding: 12px;
+            text-align: center;
+            overflow-wrap: anywhere;
+        }
+
+        .summary-item small {
+            display: block;
+            margin-bottom: 8px;
+            color: #c9d9f0;
+        }
+
+        .summary-item strong {
+            font-size: 17px;
+        }
+
+        /* Forms */
+
+        .form-card {
+            margin-bottom: 22px;
+            padding: 25px;
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            background: var(--card);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
+        }
+
+        .form-card h2 {
+            margin: 0 0 20px;
+            font-size: 22px;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 18px;
+        }
+
+        .form-group {
+            min-width: 0;
+        }
+
+        .form-group.full-width {
+            grid-column: 1 / -1;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #f1f6ff;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        input,
+        select {
+            width: 100%;
+            min-height: 44px;
+            padding: 11px 12px;
+            border: 1px solid #c6d3e5;
+            border-radius: 8px;
+            outline: none;
+            background: #fff;
+            color: #14233d;
+            font-size: 15px;
+        }
+
+        input:focus,
+        select:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(0, 198, 255, 0.18);
+        }
+
+        .help-text {
+            display: block;
+            margin-top: 7px;
+            color: #c9d9f0;
+            font-size: 12px;
+            line-height: 1.5;
+        }
+
+        /* Buttons */
+
+        .button-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 14px;
+            margin-top: 25px;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 13px 22px;
+            border: none;
+            border-radius: 9px;
+            text-decoration: none;
+            text-align: center;
+            font-size: 15px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: transform 0.2s, background 0.2s;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+        }
+
+        .btn-back {
+            border: 1px solid var(--border);
+            background: rgba(255, 255, 255, 0.08);
+            color: white;
+        }
+
+        .btn-back:hover {
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #00c6ff, #60e7ff);
+            color: #06203b;
+        }
+
+        .btn-primary:hover {
+            background: #8beeff;
+        }
+
+        .message {
+            display: none;
+            margin-top: 18px;
+            padding: 13px;
+            border-radius: 8px;
+            background: rgba(255, 90, 90, 0.15);
+            border: 1px solid rgba(255, 120, 120, 0.5);
+            color: #ffe1e1;
+            line-height: 1.5;
+        }
+
+        footer {
+            position: relative;
+            z-index: 1;
+            padding: 20px;
+            text-align: center;
+            color: #c9d9f0;
+        }
+
+        @media (max-width: 650px) {
+            .navbar {
+                flex-direction: column;
+                padding: 15px;
+            }
+
+            .nav-links {
+                justify-content: center;
+                flex-wrap: wrap;
+                gap: 15px;
+            }
+
+            .booking-summary {
+                grid-template-columns: 1fr;
+            }
+
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .form-group.full-width {
+                grid-column: auto;
+            }
+
+            .form-card {
+                padding: 18px;
+            }
+
+            .button-row {
+                flex-direction: column-reverse;
+                align-items: stretch;
+            }
+
+            .btn {
+                width: 100%;
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            .glow,
+            .floating-icon {
+                animation: none;
+            }
+
+            .btn {
+                transition: none;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Animated Background -->
+
+    <div class="animated-background" aria-hidden="true">
+        <div class="glow glow-one"></div>
+        <div class="glow glow-two"></div>
+
+        <span class="floating-icon icon-one">✈️</span>
+        <span class="floating-icon icon-two">🌍</span>
+        <span class="floating-icon icon-three">🧳</span>
+        <span class="floating-icon icon-four">☁️</span>
+    </div>
+
+    <!-- Navigation -->
+
+    <header class="navbar">
+        <h2 class="logo">✈️ Travel<span>Go</span></h2>
+
+        <nav class="nav-links">
+            <a href="home.html">Home</a>
+            <a href="destinations.html">Destinations</a>
+            <a href="my_bookings.html">My Bookings</a>
+        </nav>
+    </header>
+
+    <!-- Main Content -->
+
+    <main class="page-content">
+
+        <div class="page-heading">
+            <h1>🧳 Traveller Details</h1>
+            <p>Please enter the details of everyone travelling.</p>
+        </div>
+
+        <!-- Booking Summary -->
+
+        <section class="booking-summary" aria-label="Booking summary">
+
+            <div class="summary-item">
+                <small>📍 Destination</small>
+                <strong id="destinationName">Loading...</strong>
+            </div>
+
+            <div class="summary-item">
+                <small>📅 Travel Date</small>
+                <strong id="travelDate">Not selected</strong>
+            </div>
+
+            <div class="summary-item">
+                <small>👥 Travellers / Total</small>
+                <strong>
+                    <span id="travellerCount">1</span>
+                    <span> / </span>
+                    <span id="totalAmount">₹0</span>
+                </strong>
+            </div>
+
+        </section>
+
+        <form id="travellerForm">
+
+            <!-- Traveller forms are created here -->
+
+            <div id="travellerForms"></div>
+
+            <!-- Contact Details -->
+
+            <section class="form-card">
+
+                <h2>📞 Booking Contact Details</h2>
+
+                <div class="form-grid">
+
+                    <div class="form-group">
+                        <label for="contactEmail">Email Address *</label>
+                        <input
+                            type="email"
+                            id="contactEmail"
+                            name="contactEmail"
+                            placeholder="example@email.com"
+                            autocomplete="email"
+                            maxlength="254"
+                            required
+                        >
+                    </div>
+
+                    <div class="form-group">
+                        <label for="contactMobile">Mobile Number *</label>
+                        <input
+                            type="tel"
+                            id="contactMobile"
+                            name="contactMobile"
+                            placeholder="Enter 10-digit mobile number"
+                            inputmode="numeric"
+                            pattern="[6-9][0-9]{9}"
+                            maxlength="10"
+                            autocomplete="tel"
+                            required
+                        >
+                    </div>
+
+                </div>
+
+            </section>
+
+            <div id="formMessage" class="message" role="alert"></div>
+
+            <div class="button-row">
+
+                <a href="booking.html" class="btn btn-back">← Back</a>
+
+                <button type="submit" class="btn btn-primary">
+                    Continue to Payment →
+                </button>
+
+            </div>
+
+        </form>
+
+    </main>
+
+    <footer>
+        © 2026 TravelGo | Explore the world, one trip at a time ✈️
+    </footer>
+
+    <script>
+        "use strict";
+
+        document.addEventListener("DOMContentLoaded", function () {
+
+            // =========================================
+            // STORAGE HELPERS
+            // =========================================
+
+            function readStorage(key) {
+                try {
+                    const value = localStorage.getItem(key);
+                    return value ? JSON.parse(value) : null;
+                } catch (error) {
+                    console.error("Could not read storage:", key, error);
+                    return null;
+                }
+            }
+
+            function getValue(object, keys) {
+                if (!object || typeof object !== "object") {
+                    return "";
+                }
+
+                for (const key of keys) {
+                    const value = object[key];
+
+                    if (
+                        value !== undefined &&
+                        value !== null &&
+                        typeof value !== "object" &&
+                        String(value).trim() !== ""
+                    ) {
+                        return value;
+                    }
+                }
+
+                return "";
+            }
+
+            function parseAmount(value) {
+                if (value === undefined || value === null || value === "") {
+                    return null;
+                }
+
+                const number = Number(
+                    String(value).replace(/[₹,\s]/g, "")
+                );
+
+                return Number.isFinite(number) && number >= 0
+                    ? number
+                    : null;
+            }
+
+            // =========================================
+            // TRAVELLER COUNT
+            // =========================================
+
+            function getTravellerCount(value) {
+                if (typeof value === "number") {
+                    return Number.isFinite(value) && value > 0
+                        ? Math.floor(value)
+                        : null;
+                }
+
+                if (typeof value === "string" && value.trim()) {
+                    const number = Number(value);
+
+                    return Number.isFinite(number) && number > 0
+                        ? Math.floor(number)
+                        : null;
+                }
+
+                if (Array.isArray(value)) {
+                    return value.length || null;
+                }
+
+                if (value && typeof value === "object") {
+
+                    const countKeys = [
+                        "count",
+                        "total",
+                        "travellerCount",
+                        "travelerCount",
+                        "traveller_count",
+                        "traveler_count",
+                        "numberOfTravellers",
+                        "numberOfTravelers",
+                        "number_of_travellers",
+                        "number_of_travelers"
+                    ];
+
+                    for (const key of countKeys) {
+                        if (value[key] !== undefined) {
+                            const count = getTravellerCount(value[key]);
+
+                            if (count !== null) {
+                                return count;
+                            }
+                        }
+                    }
+
+                    const adults = Number(
+                        value.adults ?? value.adultCount ?? 0
+                    );
+
+                    const children = Number(
+                        value.children ?? value.childCount ?? 0
+                    );
+
+                    const infants = Number(
+                        value.infants ?? value.infantCount ?? 0
+                    );
+
+                    if (
+                        [adults, children, infants].every(Number.isFinite) &&
+                        adults >= 0 &&
+                        children >= 0 &&
+                        infants >= 0 &&
+                        adults + children + infants > 0
+                    ) {
+                        return adults + children + infants;
+                    }
+                }
+
+                return null;
+            }
+
+            // =========================================
+            // LOAD BOOKING DATA
+            // =========================================
+
+            const selectedDestination =
+                readStorage("tg_selected_destination") || {};
+
+            const booking =
+                readStorage("tg_booking_details") || {};
+
+            const savedTravellerDetails =
+                readStorage("tg_traveller_details") || {};
+
+            const savedTravellers = Array.isArray(
+                savedTravellerDetails.travellers
+            )
+                ? savedTravellerDetails.travellers
+                : Array.isArray(booking.travellers)
+                    ? booking.travellers
+                    : [];
+
+            const destinationName =
+                getValue(booking, [
+                    "destinationName",
+                    "destination_name",
+                    "destination"
+                ]) ||
+                getValue(selectedDestination, [
+                    "name",
+                    "title",
+                    "destinationName",
+                    "destination_name"
+                ]) ||
+                "Selected Destination";
+
+            const travelDate =
+                getValue(booking, [
+                    "travelDate",
+                    "travel_date",
+                    "date"
+                ]) ||
+                getValue(savedTravellerDetails, [
+                    "travelDate",
+                    "travel_date",
+                    "date"
+                ]) ||
+                "";
+
+            // Prefer the explicit numeric count.
+            // For older bookings, count the saved array.
+
+            let numberOfTravellers = null;
+
+            const countCandidates = [
+                booking.numberOfTravellers,
+                booking.numberOfTravelers,
+                booking.travellerCount,
+                booking.traveller_count,
+                booking.number_of_travellers,
+                booking.number_of_travelers,
+
+                savedTravellerDetails.numberOfTravellers,
+                savedTravellerDetails.numberOfTravelers,
+                savedTravellerDetails.travellerCount,
+                savedTravellerDetails.traveller_count,
+
+                booking.travellers,
+                booking.travelers,
+
+                savedTravellerDetails.travellers,
+                savedTravellerDetails.travelers
+            ];
+
+            for (const candidate of countCandidates) {
+                numberOfTravellers = getTravellerCount(candidate);
+
+                if (numberOfTravellers !== null) {
+                    break;
+                }
+            }
+
+            if (numberOfTravellers === null) {
+                numberOfTravellers = 1;
+            }
+
+            numberOfTravellers = Math.min(
+                10,
+                Math.max(1, Math.floor(numberOfTravellers))
+            );
+
+            // =========================================
+            // CALCULATE AMOUNT
+            // =========================================
+
+            const price = parseAmount(
+                getValue(booking, [
+                    "pricePerPerson",
+                    "price_per_person",
+                    "price"
+                ]) ||
+                getValue(selectedDestination, [
+                    "price",
+                    "amount"
+                ])
+            );
+
+            let total = parseAmount(
+                getValue(booking, [
+                    "totalAmount",
+                    "total_amount",
+                    "total",
+                    "amount"
+                ])
+            );
+
+            if (total === null) {
+                total = price === null
+                    ? 0
+                    : price * numberOfTravellers;
+            }
+
+            // =========================================
+            // DISPLAY BOOKING SUMMARY
+            // =========================================
+
+            document.getElementById("destinationName").textContent =
+                destinationName;
+
+            document.getElementById("travelDate").textContent =
+                travelDate
+                    ? formatDate(travelDate)
+                    : "Not selected";
+
+            document.getElementById("travellerCount").textContent =
+                String(numberOfTravellers);
+
+            document.getElementById("totalAmount").textContent =
+                formatCurrency(total);
+
+            // =========================================
+            // PREFILL EXISTING DETAILS
+            // =========================================
+
+            const contactEmail =
+                getValue(booking, [
+                    "contactEmail",
+                    "contact_email",
+                    "email",
+                    "user_email"
+                ]) ||
+                getValue(savedTravellerDetails, [
+                    "contactEmail",
+                    "contact_email",
+                    "email"
+                ]) ||
+                localStorage.getItem("tg_user_email") ||
+                "";
+
+            const contactMobile =
+                getValue(booking, [
+                    "contactMobile",
+                    "contact_mobile",
+                    "mobile",
+                    "phone"
+                ]) ||
+                getValue(savedTravellerDetails, [
+                    "contactMobile",
+                    "contact_mobile",
+                    "mobile",
+                    "phone"
+                ]) ||
+                "";
+
+            document.getElementById("contactEmail").value =
+                String(contactEmail);
+
+            document.getElementById("contactMobile").value =
+                String(contactMobile);
+
+            // =========================================
+            // CREATE ORIGINAL TRAVELLER FORMS
+            // =========================================
+
+            const travellerForms =
+                document.getElementById("travellerForms");
+
+            const form =
+                document.getElementById("travellerForm");
+
+            const message =
+                document.getElementById("formMessage");
+
+            travellerForms.replaceChildren();
+
+            for (let i = 1; i <= numberOfTravellers; i++) {
+
+                const previousTraveller =
+                    savedTravellers[i - 1] || {};
+
+                const card = document.createElement("section");
+                card.className = "form-card traveller-card";
+
+                card.innerHTML = `
+                    <h2>👤 Traveller ${i}</h2>
+
+                    <div class="form-grid">
+
+                        <div class="form-group full-width">
+                            <label for="travellerName${i}">
+                                Full Name *
+                            </label>
+
+                            <input
+                                type="text"
+                                id="travellerName${i}"
+                                name="travellerName${i}"
+                                placeholder="Enter full name"
+                                autocomplete="name"
+                                maxlength="100"
+                                required
+                            >
+                        </div>
+
+                        <div class="form-group">
+                            <label for="travellerAge${i}">
+                                Age *
+                            </label>
+
+                            <input
+                                type="number"
+                                id="travellerAge${i}"
+                                name="travellerAge${i}"
+                                min="1"
+                                max="120"
+                                placeholder="Enter age"
+                                required
+                            >
+                        </div>
+
+                        <div class="form-group">
+                            <label for="travellerGender${i}">
+                                Gender *
+                            </label>
+
+                            <select
+                                id="travellerGender${i}"
+                                name="travellerGender${i}"
+                                required
+                            >
+                                <option value="">Select</option>
+                                <option value="Male">Male</option>
+                                <option value="Female">Female</option>
+                                <option value="Other">Other</option>
+                                <option value="Prefer not to say">
+                                    Prefer not to say
+                                </option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="proofType${i}">
+                                ID Proof Type *
+                            </label>
+
+                            <select
+                                id="proofType${i}"
+                                name="proofType${i}"
+                                required
+                            >
+                                <option value="">Select ID proof</option>
+                                <option value="Passport">Passport</option>
+                                <option value="Driving Licence">
+                                    Driving Licence
+                                </option>
+                                <option value="Voter ID">Voter ID</option>
+                                <option value="Other">Other</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="proofReference${i}">
+                                Proof Reference *
+                            </label>
+
+                            <input
+                                type="text"
+                                id="proofReference${i}"
+                                name="proofReference${i}"
+                                placeholder="Enter a sample reference"
+                                maxlength="30"
+                                required
+                            >
+
+                            <small class="help-text">
+                                Use sample reference information for this project.
+                                Do not enter actual government ID numbers.
+                            </small>
+                        </div>
+
+                    </div>
+                `;
+
+                travellerForms.appendChild(card);
+
+                // Restore previously entered information.
+
+                document.getElementById("travellerName" + i).value =
+                    previousTraveller.name || "";
+
+                document.getElementById("travellerAge" + i).value =
+                    previousTraveller.age ?? "";
+
+                document.getElementById("travellerGender" + i).value =
+                    previousTraveller.gender || "";
+
+                document.getElementById("proofType" + i).value =
+                    previousTraveller.proofType || "";
+
+                document.getElementById("proofReference" + i).value =
+                    previousTraveller.proofReference || "";
+            }
+
+            // =========================================
+            // SAVE DETAILS AND CONTINUE
+            // =========================================
+
+            form.addEventListener("submit", function (event) {
+
+                event.preventDefault();
+
+                message.style.display = "none";
+                message.textContent = "";
+
+                if (!form.reportValidity()) {
+                    return;
+                }
+
+                const contactEmail =
+                    document.getElementById("contactEmail").value.trim();
+
+                const contactMobile =
+                    document.getElementById("contactMobile").value.trim();
+
+                const travellers = [];
+
+                // Collect every traveller's entered data.
+
+                for (let i = 1; i <= numberOfTravellers; i++) {
+
+                    const name = document
+                        .getElementById("travellerName" + i)
+                        .value.trim();
+
+                    const age = Number(
+                        document.getElementById("travellerAge" + i).value
+                    );
+
+                    const gender = document
+                        .getElementById("travellerGender" + i)
+                        .value;
+
+                    const proofType = document
+                        .getElementById("proofType" + i)
+                        .value.trim();
+
+                    const proofReference = document
+                        .getElementById("proofReference" + i)
+                        .value.trim();
+
+                    if (
+                        !name ||
+                        !gender ||
+                        !proofType ||
+                        !proofReference ||
+                        !Number.isFinite(age) ||
+                        age < 1 ||
+                        age > 120
+                    ) {
+                        showMessage(
+                            "Please complete all required traveller details."
+                        );
+
+                        return;
+                    }
+
+                    travellers.push({
+                        name: name,
+                        age: age,
+                        gender: gender,
+                        proofType: proofType,
+                        proofReference: proofReference
+                    });
+                }
+
+                // The first traveller is the lead traveller.
+                const leadTraveller = travellers[0];
+
+                // Save the full traveller list separately.
+
+                const travellerDetails = {
+                    destinationName: destinationName,
+                    travelDate: travelDate,
+
+                    numberOfTravellers: numberOfTravellers,
+                    travellerCount: numberOfTravellers,
+                    traveller_count: numberOfTravellers,
+
+                    totalAmount: total,
+                    pricePerPerson: price,
+
+                    contactEmail: contactEmail,
+                    contactMobile: contactMobile,
+
+                    // Save the lead name as a simple string.
+                    name: leadTraveller.name,
+                    travellerName: leadTraveller.name,
+                    traveller_name: leadTraveller.name,
+
+                    // Full list remains an array of traveller objects.
+                    travellers: travellers
+                };
+
+                // Preserve any existing booking information.
+                // Store the count as a number and the lead name as text.
+
+                const updatedBooking = {
+                    ...booking,
+
+                    destinationName: destinationName,
+                    travelDate: travelDate,
+
+                    numberOfTravellers: numberOfTravellers,
+                    travellerCount: numberOfTravellers,
+                    traveller_count: numberOfTravellers,
+
+                    travellerName: leadTraveller.name,
+                    traveller_name: leadTraveller.name,
+                    name: leadTraveller.name,
+
+                    travellers: travellers,
+
+                    totalAmount: total,
+                    pricePerPerson: price,
+
+                    contactEmail: contactEmail,
+                    contactMobile: contactMobile,
+
+                    // Email verification and payment are separate.
+                    emailVerified: false,
+                    payment_verified: false,
+                    payment_status: "Not verified"
+                };
+
+                try {
+
+                    localStorage.setItem(
+                        "tg_traveller_details",
+                        JSON.stringify(travellerDetails)
+                    );
+                    alert(JSON.stringify(travellerDetails.travellers, null, 2));
+
+                    localStorage.setItem(
+                        "tg_booking_details",
+                        JSON.stringify(updatedBooking)
+                    );
+
+                    localStorage.setItem(
+                        "tg_user_name",
+                        leadTraveller.name
+                    );
+
+                    localStorage.setItem(
+                        "tg_user_email",
+                        contactEmail
+                    );
+
+                    // Navigate to the next page.
+
+                    
+                    console.log("Travellers before payment:", travellers);
+                    alert(JSON.stringify(travellers, null, 2));
+                    window.location.href = "./payment.html";
+                } catch (error) {
+
+                    console.error(
+                        "Unable to save traveller details:",
+                        error
+                    );
+
+                    showMessage(
+                        "Unable to save the details. Please try again."
+                    );
+                }
+            });
+
+            // =========================================
+            // MESSAGE HELPER
+            // =========================================
+
+            function showMessage(text) {
+                message.textContent = text;
+                message.style.display = "block";
+
+                message.scrollIntoView({
+                    behavior: "smooth",
+                    block: "center"
+                });
+            }
+
+            // =========================================
+            // FORMATTING HELPERS
+            // =========================================
+
+            function formatCurrency(amount) {
+                return new Intl.NumberFormat("en-IN", {
+                    style: "currency",
+                    currency: "INR",
+                    maximumFractionDigits: 2
+                }).format(amount);
+            }
+
+            function formatDate(dateString) {
+                if (!dateString) {
+                    return "Not selected";
+                }
+
+                const match = /^(\d{4})-(\d{2})-(\d{2})$/.exec(
+                    String(dateString)
+                );
+
+                let date;
+
+                if (match) {
+                    date = new Date(
+                        Number(match[1]),
+                        Number(match[2]) - 1,
+                        Number(match[3])
+                    );
+                } else {
+                    date = new Date(dateString);
+                }
+
+                if (Number.isNaN(date.getTime())) {
+                    return String(dateString);
+                }
+
+                return date.toLocaleDateString("en-IN", {
+                    day: "2-digit",
+                    month: "short",
+                    year: "numeric"
+                });
+            }
+
+        });
+    </script>
+
+</body>
+</html>
