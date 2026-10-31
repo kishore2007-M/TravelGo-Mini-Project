@@ -47,13 +47,21 @@ app.use(express.urlencoded({ extended: true }));
 // ============================================
 // 3. MYSQL CONNECTION
 // ============================================
+const dbHost = process.env.DB_HOST || "localhost";
 
 const db = mysql.createPool({
-    host: process.env.DB_HOST || "localhost",
+    host: dbHost,
     user: process.env.DB_USER || "root",
     password: process.env.DB_PASSWORD,
     database: process.env.DB_NAME || "travelgo_db",
     port: Number(process.env.DB_PORT || 3306),
+
+    ssl: dbHost.includes("aivencloud.com")
+        ? {
+            ca: require("fs").readFileSync(__dirname + "/ca.pem", "utf8")
+        }
+        : undefined,
+
     waitForConnections: true,
     connectionLimit: 10,
     queueLimit: 0
